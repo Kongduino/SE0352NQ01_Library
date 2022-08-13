@@ -56,6 +56,11 @@ class SE0352NQ01 {
     void drawString(char *, uint16_t, uint16_t, GFXfont, uint8_t, unsigned char*);
     void drawUnicode(uint16_t*, uint8_t, uint16_t, uint16_t, unsigned char*, unsigned char*, uint16_t, uint8_t, uint8_t, unsigned char*);
     void drawBitmap(uint8_t, uint8_t, uint16_t, uint16_t, int8_t, int8_t, uint16_t, unsigned char *, unsigned char *, uint8_t);
+    void setPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
+    void drawCircle(int, int, int, uint8_t *, uint8_t);
+    void plotLine(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t);
+    void plotHLine(uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t);
+    void plotVLine(uint16_t, uint16_t, uint16_t, uint8_t *, uint8_t);
 
   private:
     void EPD_Reset(void);
@@ -73,6 +78,7 @@ class SE0352NQ01 {
     void SPI_Write(unsigned char);
     void get_ch2(uint16_t, const unsigned char*, uint16_t, unsigned char*, uint8_t);
     uint16_t bs(const unsigned char *, uint16_t, uint16_t);
+    void drawCirclePoints(int, int, int, int, uint8_t *, uint8_t);
 
     // LUT
     void lut_GC(void);

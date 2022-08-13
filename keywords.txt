@@ -7,6 +7,7 @@
 #######################################
 
 SE0352NQ01	KEYWORD1
+SE0352	KEYWORD1
 
 #######################################
 # Datatypes (KEYWORD1)
@@ -28,6 +29,11 @@ fill	KEYWORD2
 drawString	KEYWORD2
 drawUnicode	KEYWORD2
 drawBitmap	KEYWORD2
+setPixel	KEYWORD2
+drawCircle	KEYWORD2
+plotLine	KEYWORD2
+plotHLine	KEYWORD2
+plotVLine	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

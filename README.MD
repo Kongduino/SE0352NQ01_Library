@@ -50,6 +50,18 @@ This application, `EPD Viewer`, was made with Xojo, which is a paid development 
 
 There are 4 levels of rotation: 0 & 2 (Landscape), and 1 & 3 (Portrait). Rotation is passed to `drawString`, `drawUnicode`, and `drawBitmap` functions every time, so you can draw text in different rotations within the same screen. `send` and `send_GU` don't have yet rotation enabled.
 
+## Drawing
+
+I have added a few drawing primitives:
+
+* `void SE0352NQ01::plotHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t *buffer, uint8_t rotation);`
+* `void SE0352NQ01::plotVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
+* `void SE0352NQ01::plotLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
+* `void SE0352NQ01::drawCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rotation);`
+* `void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer);`
+
+I'll add `fillCircle()` soon.
+
 ## Demo
 
 ![demo](assets/demo.gif)

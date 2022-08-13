@@ -318,6 +318,96 @@ void SE0352NQ01::EPD_W21_WriteDATA(unsigned char data) {
   EPD_W21_MOSI_0;
 }
 
+void SE0352NQ01::plotHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t *buffer, uint8_t rotation) {
+  for (int16_t x = x0; x <= x1; x++) {
+    setPixel(x, y0, rotation, buffer);
+  }
+}
+
+void SE0352NQ01::plotVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
+  for (int16_t y = y0; y <= y1; y++) {
+    setPixel(x0, y, rotation, buffer);
+  }
+}
+
+void SE0352NQ01::plotLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
+  int16_t dx = x1 - x0;
+  int16_t dy = y1 - y0;
+  int16_t yi = 1;
+  if (dy < 0) {
+    yi = -1;
+    dy = -dy;
+  }
+  int16_t D = (2 * dy) - dx;
+  int16_t y = y0;
+  for (int16_t x = x0; x <= x1; x++) {
+    setPixel(x, y, rotation, buffer);
+    if (D > 0) {
+      y = y + yi;
+      D = D + (2 * (dy - dx));
+    } else D = D + 2 * dy;
+  }
+}
+
+void SE0352NQ01::drawCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rotation) {
+  int x = 0, y = r;
+  int d = 3 - 2 * r;
+  drawCirclePoints(xc, yc, x, y, buffer, 0);
+  while (y >= x) {
+    x++;
+    // check for decision parameter
+    // and correspondingly update d, x, y
+    if (d > 0) {
+      y--;
+      d = d + 4 * (x - y) + 10;
+    } else d = d + 4 * x + 6;
+    drawCirclePoints(xc, yc, x, y, buffer, rotation);
+    delay(50);
+  }
+}
+
+void SE0352NQ01::drawCirclePoints(int xc, int yc, int x, int y, uint8_t *buffer, uint8_t rotation) {
+  setPixel(xc + x, yc + y, rotation, buffer);
+  setPixel(xc - x, yc + y, rotation, buffer);
+  setPixel(xc + x, yc - y, rotation, buffer);
+  setPixel(xc - x, yc - y, rotation, buffer);
+  setPixel(xc + y, yc + x, rotation, buffer);
+  setPixel(xc - y, yc + x, rotation, buffer);
+  setPixel(xc + y, yc - x, rotation, buffer);
+  setPixel(xc - y, yc - x, rotation, buffer);
+}
+
+
+void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
+  uint8_t anders[8] = {
+    0b01111111, 0b10111111, 0b11011111, 0b11101111,
+    0b11110111, 0b11111011, 0b11111101, 0b11111110
+  };
+        uint16_t x0, y0, ratio;
+        if (rotation == 0) {
+          x0 = y;
+          y0 = 360 - x;
+          ratio = 30;
+        } else if (rotation == 2) {
+          x0 = 240 - y;
+          y0 = x;
+          ratio = 30;
+        } else if (rotation == 1) {
+          x0 = x;
+          y0 = y;
+          ratio = 30;
+        } else if (rotation == 3) {
+          x0 = 240 - x;
+          y0 = 360 - y;
+          ratio = 30;
+        }
+        uint16_t bytePos = y0 * ratio + x0 / 8;
+        uint8_t n = (x0 % 8); // (7 - (x % 8));
+        uint8_t bf = buffer[bytePos];
+        uint8_t af = bf & anders[n];
+        buffer[bytePos] = af;
+}
+
 void SE0352NQ01::drawBitmap(
   uint8_t width, uint8_t height, uint16_t posX, uint16_t posY,
   int8_t xOffset, int8_t yOffset, uint16_t bitmapOffset,

@@ -47,6 +47,15 @@ void textDemo() {
   SE0352.drawBitmap(gHumidity_width, gHumidity_height, px, py, 0, 0, 0, frame, gHumidity, 0);
   Serial.write('.');
   SE0352.drawString((char*)"58%", px + gHumidity_width + 5, (py + gHumidity_height) / 1.2, FreeSansBold12pt7b, 0, frame);
+
+  uint16_t x = 120;
+  for (uint16_t y = 0; y < 237; y += 3) {
+    SE0352.plotLine(x, y, 359, y + 10, frame, 0);
+    x += 5;
+  }
+  SE0352.drawCircle(60, 189, 50, frame, 0);
+  for (x = 0; x < 100; x += 2) SE0352.plotVLine(120 + x, 139, 239, frame, 0);
+  for (uint16_t y = 139; y < 239; y += 2) SE0352.plotHLine(229, y, 349, frame, 0);
   SE0352.send(frame);
   Serial.println(" done!");
 }
