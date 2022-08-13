@@ -216,6 +216,7 @@ void SE0352NQ01::send(unsigned char* picData) {
   EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_GC();
+  refresh();
 }
 
 void SE0352NQ01::send_DU(unsigned char* picData) {
@@ -223,6 +224,7 @@ void SE0352NQ01::send_DU(unsigned char* picData) {
   EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_DU();
+  refresh();
 }
 
 

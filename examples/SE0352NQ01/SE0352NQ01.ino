@@ -4,6 +4,7 @@
 // Include fonts from https://github.com/adafruit/Adafruit-GFX-Library/tree/master/Fonts
 #include "FreeSansBold12pt7b.h"
 #include "FreeSerifBoldItalic24pt7b.h"
+// See README.md for Chinese fonts
 #include "CJK14pt.h"
 #include "CJK16ptB.h"
 
@@ -30,7 +31,6 @@ void textDemo() {
   Serial.println("Chinese 4/4");
   SE0352.drawUnicode(zhongwenyekeyi, 5, 40, 65, CJK16ptBfont, CJK16ptBsparse, CJK16ptBSparseLen, CJK16ptBHeight, 2, frame);
   SE0352.send(frame);
-  SE0352.refresh();
   delay(5000);
 
   Serial.println("Text Demo 2/2");
@@ -43,7 +43,6 @@ void textDemo() {
   SE0352.drawString((char*)"58%", px + gHumidity_width + 5, (py + gHumidity_height) / 2 + 12, FreeSansBold12pt7b, 0, frame);
 
   SE0352.send(frame);
-  SE0352.refresh();
 }
 
 void setup() {
@@ -55,13 +54,10 @@ void setup() {
 void loop() {
   unsigned int i;
   SE0352.fill(PIC_WHITE);
-  SE0352.refresh();
-  delay(500);
-  delay(1500);
+  delay(1000);
   Serial.println("gImage_1");
   SE0352.send(gImage_1);
-  SE0352.refresh();
-  delay(500);
+  delay(1000);
   /*
     Example using DU waveform.
     If you use DU waveform to refresh the screen too many times, there will be shadows.
@@ -70,8 +66,7 @@ void loop() {
   */
   Serial.println("gImage_Kongduino");
   SE0352.send_DU(gImage_Kongduino);
-  SE0352.refresh();
-  delay(500);
+  delay(1000);
   Serial.println("textDemo");
   textDemo();
   delay(15000);
