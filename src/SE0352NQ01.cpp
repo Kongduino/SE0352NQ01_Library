@@ -63,13 +63,13 @@ void SE0352NQ01::EPD_init(void) {
   EPD_W21_WriteDATA(0x37); // BT_PHA[7:0]
   EPD_W21_WriteDATA(0x3D); // BT_PHB[7:0]
   EPD_W21_WriteDATA(0x3D); // x x BT_PHC[5:0]
-  EPD_W21_WriteCMD(0x60); // TCON setting      TCON
+  EPD_W21_WriteCMD(0x60); // TCON setting TCON
   EPD_W21_WriteDATA(0x22); // S2G[3:0] G2S[3:0] non-overlap = 12
   EPD_W21_WriteCMD(0x82); // VCOM_DC setting   VDCS
-  EPD_W21_WriteDATA(0x07); // x VDCS[6:0]  VCOM_DC value= -1.9v 00~3f, 0x12=-1.9v
+  EPD_W21_WriteDATA(0x07); // x VDCS[6:0] VCOM_DC value= -1.9v 00~3f, 0x12=-1.9v
   EPD_W21_WriteCMD(0x30);
   EPD_W21_WriteDATA(0x09);
-  EPD_W21_WriteCMD(0xe3); // power saving      PWS
+  EPD_W21_WriteCMD(0xe3); // power saving PWS
   EPD_W21_WriteDATA(0x88); // VCOM_W[3:0] SD_W[3:0]
   EPD_W21_WriteCMD(0x61); // resoultion setting
   EPD_W21_WriteDATA(0xf0); // HRES[7:3] 0 0 0
@@ -77,6 +77,8 @@ void SE0352NQ01::EPD_init(void) {
   EPD_W21_WriteDATA(0x68); // VRES[7:0]
   EPD_W21_WriteCMD(0X50);
   EPD_W21_WriteDATA(0xB7); // Border
+  EPD_W21_WriteCMD(0x50);
+  EPD_W21_WriteDATA(0xD7);
 #endif
 }
 
@@ -212,16 +214,16 @@ void SE0352NQ01::lut_DU(void) {
 }
 
 void SE0352NQ01::send(unsigned char* picData) {
-  EPD_W21_WriteCMD(0x50);
-  EPD_W21_WriteDATA(0xD7);
+//   EPD_W21_WriteCMD(0x50);
+//   EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_GC();
   refresh();
 }
 
 void SE0352NQ01::send_DU(unsigned char* picData) {
-  EPD_W21_WriteCMD(0x50);
-  EPD_W21_WriteDATA(0xD7);
+//   EPD_W21_WriteCMD(0x50);
+//   EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_DU();
   refresh();
