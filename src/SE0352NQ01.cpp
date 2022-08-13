@@ -349,9 +349,9 @@ void SE0352NQ01::plotLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
   }
 }
 
-void SE0352NQ01::drawCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rotation) {
-  int x = 0, y = r;
-  int d = 3 - 2 * r;
+void SE0352NQ01::drawCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t *buffer, uint8_t rotation) {
+  uint16_t x = 0, y = r;
+  uint16_t d = 3 - 2 * r;
   drawCirclePoints(xc, yc, x, y, buffer, 0);
   while (y >= x) {
     x++;
@@ -366,7 +366,7 @@ void SE0352NQ01::drawCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rota
   }
 }
 
-void SE0352NQ01::drawCirclePoints(int xc, int yc, int x, int y, uint8_t *buffer, uint8_t rotation) {
+void SE0352NQ01::drawCirclePoints(uint16_t xc, uint16_t yc, uint16_t x, uint16_t y, uint8_t *buffer, uint8_t rotation) {
   setPixel(xc + x, yc + y, rotation, buffer);
   setPixel(xc - x, yc + y, rotation, buffer);
   setPixel(xc + x, yc - y, rotation, buffer);
@@ -375,6 +375,44 @@ void SE0352NQ01::drawCirclePoints(int xc, int yc, int x, int y, uint8_t *buffer,
   setPixel(xc - y, yc + x, rotation, buffer);
   setPixel(xc + y, yc - x, rotation, buffer);
   setPixel(xc - y, yc - x, rotation, buffer);
+}
+
+void SE0352NQ01::drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
+  uint16_t fx0, fx1, fy0, fy1;
+  if(x1>x0) {
+    fx0=x1; fx1 = x0;
+  } else {
+    fx1=x1; fx0 = x0;
+  }
+  if(y1>y0) {
+    fy0=y1; fy1 = y0;
+  } else {
+    fy1=y1; fy0 = y0;
+  }
+  plotHLine(fx0, fy0, fx1, fy0, buffer, rotation);
+  plotHLine(fx0, fy1, fx1, fy1, buffer, rotation);
+  plotVLine(fx0, fy0, fx0, fy1, buffer, rotation);
+  plotVLine(fx1, fy0, fx1, fy1, buffer, rotation);
+}
+
+void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
+  uint16_t fx0, fx1, fy0, fy1, x, y;
+  if(x1>x0) {
+    fx0=x1; fx1 = x0+1;
+  } else {
+    fx1=x1+1; fx0 = x0;
+  }
+  if(y1>y0) {
+    fy0=y1; fy1 = y0+1;
+  } else {
+    fy1=y1+1; fy0 = y0;
+  }
+  for(x = fx0; x<fx1; x++) {
+    plotVLine(x, fy0, x, fy1, buffer, rotation);
+  }
+  for(y = fy0; y<fy1; y++) {
+    plotHLine(fx0, y, fx1, y, buffer, rotation);
+  }
 }
 
 

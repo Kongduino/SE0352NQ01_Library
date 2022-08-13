@@ -59,6 +59,8 @@ I have added a few drawing primitives:
 * `void SE0352NQ01::plotLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
 * `void SE0352NQ01::drawCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rotation);`
 * `void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer);`
+* `drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
+* `fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
 
 I'll add `fillCircle()` soon.
 
