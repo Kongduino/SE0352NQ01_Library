@@ -6,7 +6,7 @@ A library for the SE0352NQ01 e-paper display, driven by a Wisblock RAK4631 (nRF5
 python3 font_to_py.py -x -k cjk /path/to/font.otf 16 cjk16b.py
 ```
 
-I cleaned up `cjk16b.py` a little, and added code that produces the `CJK16pt.h` header file. This file can then be included into the Arduino project.
+I cleaned up `cjk16b.py` a little, and added code that produces the `CJK16pt.h` header file. This file can then be included into the Arduino project. The [cjk](assets/cjk) subset file is included, so you can edit it and add/remove chars.
 
 ```c
 #include <SE0352NQ01.h>
@@ -40,13 +40,15 @@ The most important commands are, `drawString`, `drawUnicode`, and `drawBitmap`. 
 
 The `send` and `send_GU` commands send full-size images to the EPD.
 
-## Rotation
-
-There are 4 levels of rotation: 0 & 2 (Landscape), and 1 & 3 (Portrait). Rotation is passed to `drawString`, `drawUnicode`, and `drawBitmap` functions every time, so you can draw text in different rotations within the same screen. `send` and `send_GU` don't have yet rotation enabled.
-
 ![Full-Size_Image](assets/Full-Size_Image.jpg)
 
 ![Resized_Image](assets/Resized_Image.jpg)
+
+This application, `EPD Viewer`, was made with Xojo, which is a paid development platform. I will release the code, but it'd require Xojo to compile it. I've added in the mean time a binary for Mac OS X, which is what I use. When I can test Linux and Windows version, I will release them too.
+
+## Rotation
+
+There are 4 levels of rotation: 0 & 2 (Landscape), and 1 & 3 (Portrait). Rotation is passed to `drawString`, `drawUnicode`, and `drawBitmap` functions every time, so you can draw text in different rotations within the same screen. `send` and `send_GU` don't have yet rotation enabled.
 
 ## Demo
 
