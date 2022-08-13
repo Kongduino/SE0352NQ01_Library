@@ -42,4 +42,6 @@ The most important commands are `drawString`, `drawUnicode`, and `drawBitmap`. T
 
 ![Resized_Image](assets/Resized_Image.jpg)
 
+## Demo
+
 ![demo](assets/demo.gif)
