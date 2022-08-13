@@ -62,6 +62,8 @@ I have added a few drawing primitives:
 
 I'll add `fillCircle()` soon.
 
+![Drawing_Functions](assets/Drawing_Functions.png)
+
 ## Demo
 
 ![demo](assets/demo.gif)
