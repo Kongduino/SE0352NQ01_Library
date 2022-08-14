@@ -31,9 +31,13 @@ drawUnicode	KEYWORD2
 drawBitmap	KEYWORD2
 setPixel	KEYWORD2
 drawCircle	KEYWORD2
-plotLine	KEYWORD2
-plotHLine	KEYWORD2
-plotVLine	KEYWORD2
+fillCircle	KEYWORD2
+drawRect	KEYWORD2
+fillRect	KEYWORD2
+drawLine	KEYWORD2
+drawHLine	KEYWORD2
+drawVLine	KEYWORD2
+drawPolygon	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

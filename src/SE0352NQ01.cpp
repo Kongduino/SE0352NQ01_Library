@@ -281,11 +281,14 @@ void SE0352NQ01::KEY_Scan(void) {
 
 void SE0352NQ01::EPD_Reset(void) {
   EPD_W21_RST_1;
-  driver_delay_xms(10); // At least 10ms delay
+  // driver_delay_xms(10); // At least 10ms delay
+  delay(10);
   EPD_W21_RST_0; // Module reset
-  driver_delay_xms(100); // At least 10ms delay
+  // driver_delay_xms(100); // At least 10ms delay
+  delay(100);
   EPD_W21_RST_1;
-  driver_delay_xms(100); // At least 10ms delay
+  // driver_delay_xms(100); // At least 10ms delay
+  delay(100);
 }
 
 // ********************SPI迡嚙踝蕭嚙豎綽蕭硌嚙踝蕭****************************
