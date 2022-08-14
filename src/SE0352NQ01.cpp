@@ -345,33 +345,28 @@ void SE0352NQ01::drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotati
 }
 
 void SE0352NQ01::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
-  uint16_t x2, x3;
-  if(x0>x1) {
-    x2 = x1; x3 = x0;
-  } else {
-    x2 = x0; x3 = x1;
-  }
-  uint16_t y2, y3;
-  if(y0>y1) {
-    y2 = y1; y3 = y0;
-  } else {
-    y2 = y0; y3 = y1;
-  }
-  // Serial.printf("line from %d:%d to %d:%d\n", x2, y2, x3, y3);
-  if(x2 == x3 && y2 == y3) {
+  if(x0 == x1 && y0 == y1) {
     // one pixel
-    setPixel(x2, y2, rotation, buffer);
+    setPixel(x0, y0, rotation, buffer);
     return;
   }
-  if(x2 == x3) {
+  if(x0 == x1) {
     // vertical line
-    drawVLine(x2, y2, y3, rotation, buffer);
+    drawVLine(x0, y0, y1, rotation, buffer);
     return;
   }
-  if(y2 == y3) {
+  if(y0 == y1) {
     // horizontal line
-    drawVLine(x2, y2, x3, rotation, buffer);
+    drawVLine(x0, y0, x1, rotation, buffer);
     return;
+  }
+  uint16_t x2, x3, y2, y3;
+  if(x0>x1) {
+    x2 = x1; x3 = x0+1;
+    y2 = y1; y3 = y0+1;
+  } else {
+    x2 = x0; x3 = x1+1;
+    y2 = y0; y3 = y1+1;
   }
   int16_t dx = x3 - x2;
   int16_t dy = y3 - y2;
@@ -471,6 +466,12 @@ void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
   }
 }
 
+void SE0352NQ01::drawPolygon(uint16_t * points, uint16_t len, uint8_t rotation, uint8_t *buffer) {
+  for (uint16_t x = 0; x < len-1; x++) {
+    // Serial.printf("line from %d:%d to %d:%d\n", points[x*2], points[x*2+1], points[x*2+2], points[x*2+3]);
+    drawLine(points[x*2], points[x*2+1], points[x*2+2], points[x*2+3], rotation, buffer);
+  }
+}
 
 void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
   uint8_t anders[8] = {

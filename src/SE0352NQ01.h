@@ -64,6 +64,7 @@ class SE0352NQ01 {
     void drawLine(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawHLine(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawVLine(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
+    void drawPolygon(uint16_t *, uint16_t, uint8_t, uint8_t *);
 
   private:
     void EPD_Reset(void);
