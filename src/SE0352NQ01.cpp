@@ -751,3 +751,5 @@ void SE0352NQ01::get_ch2(uint16_t ch, const uint8_t* sparse, uint16_t sparseLen,
   next_offs = doff + ((myWidth - 1) / 8 + 1) * fHeight;
   myHeight = fHeight;
 }
+
+SE0352NQ01 SE0352;

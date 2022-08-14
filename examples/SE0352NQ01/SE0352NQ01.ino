@@ -9,7 +9,6 @@
 #include "CJK16ptB.h"
 
 unsigned char frame[10800];
-SE0352NQ01 SE0352;
 
 void textDemo() {
   Serial.print("Text Demo 1/2");
