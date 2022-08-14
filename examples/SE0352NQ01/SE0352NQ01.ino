@@ -14,7 +14,6 @@ SE0352NQ01 SE0352;
 void textDemo() {
   Serial.print("Text Demo 1/2");
   memset(frame, PIC_WHITE, 10800);
-  Serial.println("ASCII");
   // Will wrap around
   SE0352.drawString((char*)"Landscape 0", 300, 30, FreeSansBold12pt7b, 0, frame);
   SE0352.drawString((char*)"Kongduino", 60, 125, FreeSerifBoldItalic24pt7b, 0, frame);
@@ -32,51 +31,66 @@ void textDemo() {
   SE0352.drawUnicode(zhongwenyekeyi, 5, 40, 65, CJK16ptBfont, CJK16ptBsparse, CJK16ptBSparseLen, CJK16ptBHeight, 2, frame);
   SE0352.send(frame);
   Serial.println(" done!");
-  delay(2000);
+}
 
-  Serial.print("Text Demo 2/2");
+void graphicDemo() {
+  Serial.println("Graphic Demo");
   memset(frame, PIC_WHITE, 10800);
   uint16_t px = 2, py = 2;
-  Serial.write('.');
+  Serial.print(" . Thermometer");
   SE0352.drawBitmap(gThermometer_width, gThermometer_height, px, py, 0, 0, 0, frame, gThermometer, 0);
   // In FreeSansBold12pt7b, ` has been replaced with an o, with a bigger yOffset, to make a ° sign cheaply :-)
-  Serial.write('.');
+  Serial.println(" 27*");
   SE0352.drawString((char*)"27`", px + gThermometer_width + 5, (py + gThermometer_height) / 2 + 12, FreeSansBold12pt7b, 0, frame);
   py += gThermometer_height + 10;
-  Serial.write('.');
+  Serial.print(" . Humidity");
   SE0352.drawBitmap(gHumidity_width, gHumidity_height, px, py, 0, 0, 0, frame, gHumidity, 0);
-  Serial.write('.');
+  Serial.println(" 58%");
   SE0352.drawString((char*)"58%", px + gHumidity_width + 5, (py + gHumidity_height) / 1.2, FreeSansBold12pt7b, 0, frame);
 
   uint16_t x = 120;
+  Serial.println(" . Moire");
   for (uint16_t y = 0; y < 237; y += 3) {
-    SE0352.plotLine(x, y, 359, y + 10, frame, 0);
+    SE0352.drawLine(x, y, 359, y + 10, 0, frame);
     x += 5;
   }
-  SE0352.drawCircle(60, 189, 50, frame, 0);
-  for (x = 0; x < 100; x += 2) SE0352.plotVLine(120 + x, 139, 239, frame, 0);
-  for (uint16_t y = 139; y < 239; y += 2) SE0352.plotHLine(229, y, 349, frame, 0);
+
+  Serial.println(" . drawRect");
+  SE0352.drawRect(150, py, 190, py + 40, 0, frame);
+  Serial.println(" . fillRect");
+  SE0352.fillRect(155, py + 5, 185, py + 35, 0, frame);
+  Serial.println(" . drawCircle");
+  SE0352.drawCircle(60, 189, 50, 0, frame);
+  Serial.println(" . fillCircle");
+  SE0352.fillCircle(60, 189, 25, 0, frame);
+
+  Serial.println(" . VLines 120 to 220 [139:239] step 2");
+  for (x = 120; x < 220; x += 2) SE0352.drawVLine(x, 139, 239, 0, frame);
+  Serial.println(" . HLines [229:349] 139 to 239 step 2");
+  for (uint16_t y = 139; y < 240; y += 2) SE0352.drawHLine(229, y, 349, 0, frame);
   SE0352.send(frame);
   Serial.println(" done!");
 }
 
 void setup() {
-  Serial.begin(115200);
   delay(5000);
+  Serial.begin(115200);
+  delay(500);
   Serial.println("EPD TEST");
 }
 
 void loop() {
-  unsigned int i;
   SE0352.fill(PIC_WHITE);
   delay(1000);
   Serial.println("gImage_1");
   SE0352.send(gImage_1);
-  delay(1000);
+  delay(5000);
   Serial.println("gImage_Kongduino");
   SE0352.send(gImage_Kongduino);
-  delay(1000);
+  delay(5000);
   Serial.println("textDemo");
   textDemo();
-  delay(15000);
+  delay(5000);
+  graphicDemo();
+  delay(5000);
 }

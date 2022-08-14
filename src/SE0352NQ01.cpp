@@ -133,7 +133,7 @@ void SE0352NQ01::lut_5S(void) {
 // LUT download
 void SE0352NQ01::lut_GC(void) {
   /*
-  It is recommended to call GC waveform to refresh the screen for normal use.
+    It is recommended to call GC waveform to refresh the screen for normal use.
   */
   unsigned int count;
   EPD_W21_WriteCMD(0x20); // vcom
@@ -174,8 +174,8 @@ void SE0352NQ01::lut_GC(void) {
 // LUT download
 void SE0352NQ01::lut_DU(void) {
   /*
-  If you use DU waveform to refresh the screen too many times, there will be low shadows.
-  It is recommended to use GC waveform to refresh the screen every 5~10 times after calling DU waveform.
+    If you use DU waveform to refresh the screen too many times, there will be low shadows.
+    It is recommended to use GC waveform to refresh the screen every 5~10 times after calling DU waveform.
   */
   unsigned int count;
   EPD_W21_WriteCMD(0x20); // vcom
@@ -213,24 +213,24 @@ void SE0352NQ01::lut_DU(void) {
   }
 }
 
-void SE0352NQ01::send(unsigned char* picData) {
-//   EPD_W21_WriteCMD(0x50);
-//   EPD_W21_WriteDATA(0xD7);
+void SE0352NQ01::send(uint8_t* picData) {
+  //   EPD_W21_WriteCMD(0x50);
+  //   EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_GC();
   refresh();
 }
 
-void SE0352NQ01::send_DU(unsigned char* picData) {
-//   EPD_W21_WriteCMD(0x50);
-//   EPD_W21_WriteDATA(0xD7);
+void SE0352NQ01::send_DU(uint8_t* picData) {
+  //   EPD_W21_WriteCMD(0x50);
+  //   EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_DU();
   refresh();
 }
 
 
-void SE0352NQ01::PIC_display1(unsigned char* picData) {
+void SE0352NQ01::PIC_display1(uint8_t* picData) {
   unsigned int i;
   EPD_W21_WriteCMD(0x13); // Transfer new data
   for (i = 0; i < (Gate_Pixel * Source_Pixel / 8); i++) {
@@ -239,12 +239,12 @@ void SE0352NQ01::PIC_display1(unsigned char* picData) {
   }
 }
 
-void SE0352NQ01::fill(unsigned char NUM) {
+void SE0352NQ01::fill(uint8_t NUM) {
   PIC_display(NUM);
   lut_DU();
 }
 
-void SE0352NQ01::PIC_display(unsigned char NUM) {
+void SE0352NQ01::PIC_display(uint8_t NUM) {
   unsigned int row, column;
   unsigned int pcnt;
   pcnt = 0;
@@ -270,7 +270,7 @@ void SE0352NQ01::lcd_chkstatus(void) {
 }
 
 void SE0352NQ01::KEY_Scan(void) {
-  // unsigned char KEY;
+  // uint8_t KEY;
   // do {
   // KEY = KEY0;
   // driver_delay_xms(2);
@@ -289,8 +289,8 @@ void SE0352NQ01::EPD_Reset(void) {
 }
 
 // ********************SPI迡嚙踝蕭嚙豎綽蕭硌嚙踝蕭****************************
-void SE0352NQ01::SPI_Write(unsigned char value) {
-  unsigned char i;
+void SE0352NQ01::SPI_Write(uint8_t value) {
+  uint8_t i;
   for (i = 0; i < 8; i++) {
     EPD_W21_CLK_0;
     if (value & 0x80) EPD_W21_MOSI_1;
@@ -300,7 +300,7 @@ void SE0352NQ01::SPI_Write(unsigned char value) {
   }
 }
 
-void SE0352NQ01::EPD_W21_WriteCMD(unsigned char command) {
+void SE0352NQ01::EPD_W21_WriteCMD(uint8_t command) {
   EPD_W21_CS_0;
   EPD_W21_DC_0; // command write
   SPI_Write(command);
@@ -308,7 +308,7 @@ void SE0352NQ01::EPD_W21_WriteCMD(unsigned char command) {
   EPD_W21_DC_1;
 }
 
-void SE0352NQ01::EPD_W21_WriteDATA(unsigned char data) {
+void SE0352NQ01::EPD_W21_WriteDATA(uint8_t data) {
   EPD_W21_MOSI_0;
   EPD_W21_CS_0;
   EPD_W21_DC_1; // data write
@@ -318,29 +318,72 @@ void SE0352NQ01::EPD_W21_WriteDATA(unsigned char data) {
   EPD_W21_MOSI_0;
 }
 
-void SE0352NQ01::plotHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t *buffer, uint8_t rotation) {
-  for (int16_t x = x0; x <= x1; x++) {
+void SE0352NQ01::drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t rotation, uint8_t *buffer) {
+  uint16_t x2, x3;
+  if(x0>x1) {
+    x2 = x1; x3 = x0+1;
+  } else {
+    x2 = x0; x3 = x1+1;
+  }
+  // Serial.printf("hline from %d:%d to %d:%d\n", x2, y0, x3-1, y0);
+  for (int16_t x = x2; x < x3; x++) {
     setPixel(x, y0, rotation, buffer);
   }
 }
 
-void SE0352NQ01::plotVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
-  for (int16_t y = y0; y <= y1; y++) {
+void SE0352NQ01::drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
+  uint16_t y2, y3;
+  if(y0>y1) {
+    y2 = y1; y3 = y0+1;
+  } else {
+    y2 = y0; y3 = y1+1;
+  }
+  // Serial.printf("vline from %d:%d to %d:%d\n", x0, y2, x0, y3);
+  for (int16_t y = y2; y < y3; y++) {
     setPixel(x0, y, rotation, buffer);
   }
 }
 
-void SE0352NQ01::plotLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
-  int16_t dx = x1 - x0;
-  int16_t dy = y1 - y0;
+void SE0352NQ01::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
+  uint16_t x2, x3;
+  if(x0>x1) {
+    x2 = x1; x3 = x0;
+  } else {
+    x2 = x0; x3 = x1;
+  }
+  uint16_t y2, y3;
+  if(y0>y1) {
+    y2 = y1; y3 = y0;
+  } else {
+    y2 = y0; y3 = y1;
+  }
+  // Serial.printf("line from %d:%d to %d:%d\n", x2, y2, x3, y3);
+  if(x2 == x3 && y2 == y3) {
+    // one pixel
+    setPixel(x2, y2, rotation, buffer);
+    return;
+  }
+  if(x2 == x3) {
+    // vertical line
+    drawVLine(x2, y2, y3, rotation, buffer);
+    return;
+  }
+  if(y2 == y3) {
+    // horizontal line
+    drawVLine(x2, y2, x3, rotation, buffer);
+    return;
+  }
+  int16_t dx = x3 - x2;
+  int16_t dy = y3 - y2;
   int16_t yi = 1;
   if (dy < 0) {
     yi = -1;
     dy = -dy;
   }
   int16_t D = (2 * dy) - dx;
-  int16_t y = y0;
-  for (int16_t x = x0; x <= x1; x++) {
+  int16_t y = y2;
+  x3 += 1;
+  for (int16_t x = x2; x < x3; x++) {
     setPixel(x, y, rotation, buffer);
     if (D > 0) {
       y = y + yi;
@@ -349,24 +392,7 @@ void SE0352NQ01::plotLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
   }
 }
 
-void SE0352NQ01::drawCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t *buffer, uint8_t rotation) {
-  uint16_t x = 0, y = r;
-  uint16_t d = 3 - 2 * r;
-  drawCirclePoints(xc, yc, x, y, buffer, 0);
-  while (y >= x) {
-    x++;
-    // check for decision parameter
-    // and correspondingly update d, x, y
-    if (d > 0) {
-      y--;
-      d = d + 4 * (x - y) + 10;
-    } else d = d + 4 * x + 6;
-    drawCirclePoints(xc, yc, x, y, buffer, rotation);
-    delay(50);
-  }
-}
-
-void SE0352NQ01::drawCirclePoints(uint16_t xc, uint16_t yc, uint16_t x, uint16_t y, uint8_t *buffer, uint8_t rotation) {
+void SE0352NQ01::drawCirclePoints(uint16_t xc, uint16_t yc, uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
   setPixel(xc + x, yc + y, rotation, buffer);
   setPixel(xc - x, yc + y, rotation, buffer);
   setPixel(xc + x, yc - y, rotation, buffer);
@@ -377,41 +403,71 @@ void SE0352NQ01::drawCirclePoints(uint16_t xc, uint16_t yc, uint16_t x, uint16_t
   setPixel(xc - y, yc - x, rotation, buffer);
 }
 
-void SE0352NQ01::drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
-  uint16_t fx0, fx1, fy0, fy1;
-  if(x1>x0) {
-    fx0=x1; fx1 = x0;
-  } else {
-    fx1=x1; fx0 = x0;
+void SE0352NQ01::drawFillCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer, uint8_t fill) {
+  int16_t x = 0, y = r;
+  int16_t d = 3 - 2 * r;
+  if(fill==0) drawCirclePoints(xc, yc, x, y, rotation, buffer);
+  else fillCirclePoints(xc, yc, x, y, rotation, buffer);
+  while (y >= x) {
+    x++;
+    // check for decision parameter
+    // and correspondingly update d, x, y
+    if (d > 0) {
+      y--;
+      d = d + 4 * (x - y) + 10;
+    } else d = d + 4 * x + 6;
+    if(fill==0) drawCirclePoints(xc, yc, x, y, rotation, buffer);
+    else fillCirclePoints(xc, yc, x, y, rotation, buffer);
   }
-  if(y1>y0) {
-    fy0=y1; fy1 = y0;
-  } else {
-    fy1=y1; fy0 = y0;
-  }
-  plotHLine(fx0, fy0, fx1, fy0, buffer, rotation);
-  plotHLine(fx0, fy1, fx1, fy1, buffer, rotation);
-  plotVLine(fx0, fy0, fx0, fy1, buffer, rotation);
-  plotVLine(fx1, fy0, fx1, fy1, buffer, rotation);
 }
 
-void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation) {
+void SE0352NQ01::fillCirclePoints(uint16_t xc, uint16_t yc, uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
+  drawHLine(xc - x, yc + y, xc + x, rotation, buffer);
+  drawHLine(xc - x, yc - y, xc + x, rotation, buffer);
+  drawHLine(xc - y, yc + x, xc + y, rotation, buffer);
+  drawHLine(xc - y, yc - x, xc + y, rotation, buffer);
+}
+
+void SE0352NQ01::fillCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer) {
+  drawFillCircle(xc, yc, r, rotation, buffer, 1);
+}
+
+void SE0352NQ01::drawCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer) {
+  drawFillCircle(xc, yc, r, rotation, buffer, 0);
+}
+
+void SE0352NQ01::drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
+  uint16_t fx0, fx1, fy0, fy1;
+  if (x1 > x0) {
+    fx0 = x1; fx1 = x0;
+  } else {
+    fx1 = x1; fx0 = x0;
+  }
+  if (y1 > y0) {
+    fy0 = y1; fy1 = y0;
+  } else {
+    fy1 = y1; fy0 = y0;
+  }
+  drawHLine(fx0, fy0, fx1, rotation, buffer);
+  drawHLine(fx0, fy1, fx1, rotation, buffer);
+  drawVLine(fx0, fy0, fy1, rotation, buffer);
+  drawVLine(fx1, fy0, fy1, rotation, buffer);
+}
+
+void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   uint16_t fx0, fx1, fy0, fy1, x, y;
-  if(x1>x0) {
-    fx0=x1; fx1 = x0+1;
+  if (x1 < x0) {
+    fx0 = x1; fx1 = x0 + 1;
   } else {
-    fx1=x1+1; fx0 = x0;
+    fx1 = x1 + 1; fx0 = x0;
   }
-  if(y1>y0) {
-    fy0=y1; fy1 = y0+1;
+  if (y1 < y0) {
+    fy0 = y1; fy1 = y0 + 1;
   } else {
-    fy1=y1+1; fy0 = y0;
+    fy1 = y1 + 1; fy0 = y0;
   }
-  for(x = fx0; x<fx1; x++) {
-    plotVLine(x, fy0, x, fy1, buffer, rotation);
-  }
-  for(y = fy0; y<fy1; y++) {
-    plotHLine(fx0, y, fx1, y, buffer, rotation);
+  for (y = fy0; y < fy1; y++) {
+    drawHLine(fx0, y, fx1, rotation, buffer);
   }
 }
 
@@ -421,35 +477,35 @@ void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buf
     0b01111111, 0b10111111, 0b11011111, 0b11101111,
     0b11110111, 0b11111011, 0b11111101, 0b11111110
   };
-        uint16_t x0, y0, ratio;
-        if (rotation == 0) {
-          x0 = y;
-          y0 = 360 - x;
-          ratio = 30;
-        } else if (rotation == 2) {
-          x0 = 240 - y;
-          y0 = x;
-          ratio = 30;
-        } else if (rotation == 1) {
-          x0 = x;
-          y0 = y;
-          ratio = 30;
-        } else if (rotation == 3) {
-          x0 = 240 - x;
-          y0 = 360 - y;
-          ratio = 30;
-        }
-        uint16_t bytePos = y0 * ratio + x0 / 8;
-        uint8_t n = (x0 % 8); // (7 - (x % 8));
-        uint8_t bf = buffer[bytePos];
-        uint8_t af = bf & anders[n];
-        buffer[bytePos] = af;
+  uint16_t x0, y0, ratio;
+  if (rotation == 0) {
+    x0 = y;
+    y0 = 360 - x;
+    ratio = 30;
+  } else if (rotation == 2) {
+    x0 = 240 - y;
+    y0 = x;
+    ratio = 30;
+  } else if (rotation == 1) {
+    x0 = x;
+    y0 = y;
+    ratio = 30;
+  } else if (rotation == 3) {
+    x0 = 240 - x;
+    y0 = 360 - y;
+    ratio = 30;
+  }
+  uint16_t bytePos = y0 * ratio + x0 / 8;
+  uint8_t n = (x0 % 8); // (7 - (x % 8));
+  uint8_t bf = buffer[bytePos];
+  uint8_t af = bf & anders[n];
+  buffer[bytePos] = af;
 }
 
 void SE0352NQ01::drawBitmap(
   uint8_t width, uint8_t height, uint16_t posX, uint16_t posY,
   int8_t xOffset, int8_t yOffset, uint16_t bitmapOffset,
-  unsigned char *buffer, unsigned char *bitmap, uint8_t rotation = 0
+  uint8_t *buffer, uint8_t *bitmap, uint8_t rotation = 0
 ) {
   uint8_t anders[8] = {
     0b01111111, 0b10111111, 0b11011111, 0b11101111,
@@ -491,7 +547,7 @@ void SE0352NQ01::drawBitmap(
   }
 }
 
-void SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont myFont, uint8_t rotation, unsigned char* buffer) {
+void SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont myFont, uint8_t rotation, uint8_t* buffer) {
   uint8_t ln = strlen(myStr);
   for (uint8_t i = 0; i < ln; i++) {
     uint8_t c = myStr[i] - 32;
@@ -520,12 +576,12 @@ void SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont m
 void SE0352NQ01::drawUnicode(
   uint16_t *myStr, uint8_t len,
   uint16_t posX, uint16_t posY,
-  unsigned char *myFont, unsigned char *myIndex,
+  uint8_t *myFont, uint8_t *myIndex,
   uint16_t myIndexLen, uint8_t charHeight,
-  uint8_t rotation, unsigned char* buffer) {
+  uint8_t rotation, uint8_t* buffer) {
   // Serial.printf("sparseLen = %d; charHeight = %d\n", myIndexLen, charHeight);
   for (uint8_t zw = 0; zw < len; zw++) {
-    // get_ch2(uint16_t ch, const unsigned char* sparse, uint16_t sparseLen, unsigned char* myFont, uint8_t fHeight) {
+    // get_ch2(uint16_t ch, const uint8_t* sparse, uint16_t sparseLen, uint8_t* myFont, uint8_t fHeight) {
     get_ch2(myStr[zw], myIndex, myIndexLen, myFont, charHeight);
     // Serial.printf("doff = %d, next_offs = %d, myHeight = %d, myWidth = %d\n\n", doff, next_offs, myHeight, myWidth);
     uint8_t ln = (next_offs - doff);
@@ -552,7 +608,7 @@ void SE0352NQ01::drawUnicode(
   }
 }
 
-uint16_t SE0352NQ01::bs(const unsigned char *lst, uint16_t sparseLen, uint16_t val) {
+uint16_t SE0352NQ01::bs(const uint8_t *lst, uint16_t sparseLen, uint16_t val) {
   uint16_t low = 0;
   uint16_t high = (sparseLen / 4);
   uint8_t count = 0;
@@ -583,7 +639,7 @@ uint16_t SE0352NQ01::bs(const unsigned char *lst, uint16_t sparseLen, uint16_t v
   return 0;
 }
 
-void SE0352NQ01::get_ch2(uint16_t ch, const unsigned char* sparse, uint16_t sparseLen, unsigned char* myFont, uint8_t fHeight) {
+void SE0352NQ01::get_ch2(uint16_t ch, const uint8_t* sparse, uint16_t sparseLen, uint8_t* myFont, uint8_t fHeight) {
   myWidth = 0;
   next_offs = 0;
   next_offs = 0;
