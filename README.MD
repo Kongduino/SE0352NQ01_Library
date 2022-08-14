@@ -62,6 +62,7 @@ I have added a few drawing primitives:
 * `void fillCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rotation);`
 * `void drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
 * `void fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
+* `void drawPolygon(uint16_t * points, uint16_t len, uint8_t rotation, uint8_t *buffer)`
 
 ![Drawing_Functions](assets/Drawing_Functions.png)
 
