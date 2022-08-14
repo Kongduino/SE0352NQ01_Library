@@ -59,10 +59,14 @@ I have added a few drawing primitives:
 * `void drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
 * `void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
 * `void drawCircle(int xc, int yc, int r, uint8_t rotation, uint8_t *buffer);`
-* `void fillCircle(int xc, int yc, int r, uint8_t rotation, uint8_t *buffer);`
 * `void drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
-* `void fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
 * `void drawPolygon(uint16_t * points, uint16_t len, uint8_t rotation, uint8_t *buffer)`
+* `void fillCircle(int xc, int yc, int r, uint8_t rotation, uint8_t *buffer);`
+* `void fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
+* `void fillContour(uint16_t iXseed, uint16_t iYseed, uint8_t rotation, uint8_t *buffer);`
+
+`fillContour()` works pretty well, but in some cases it may require more than one call. For example, in the image below, `fillContour()` had to be called twice for the narrow disk: I drew two circles a few pixels apart, then called `fillContour()` once on the left, and once on the right.
+
 
 ![Drawing_Functions](assets/Drawing_Functions.png)
 
