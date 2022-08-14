@@ -49,10 +49,11 @@ void graphicDemo() {
   SE0352.drawString((char*)"58%", px + gHumidity_width + 5, (py + gHumidity_height) / 1.2, FreeSansBold12pt7b, 0, frame);
 
   uint16_t x = 120;
-  Serial.println(" . Moire");
-  for (uint16_t y = 0; y < 237; y += 3) {
-    SE0352.drawLine(x, y, 359, y + 10, 0, frame);
-    x += 5;
+  Serial.println(" . Lines");
+  SE0352.drawRect(240, 0, 359, 119, 0, frame);
+  for (uint16_t x = 3; x < 120; x += 3) {
+    SE0352.drawLine(x + 240, 0, 358, x, 0, frame);
+    SE0352.drawLine(240, 119 - x, 359 - x, 119, 0, frame);
   }
 
   Serial.println(" . drawRect");
@@ -61,6 +62,14 @@ void graphicDemo() {
   SE0352.fillRect(155, py + 5, 185, py + 35, 0, frame);
   Serial.println(" . drawCircle");
   SE0352.drawCircle(60, 189, 50, 0, frame);
+  Serial.println(" . drawCircle");
+  SE0352.drawCircle(60, 189, 45, 0, frame);
+  Serial.println(" . drawCircle");
+  SE0352.drawCircle(60, 189, 40, 0, frame);
+  Serial.println(" . floodFill");
+  SE0352.fillContour(16, 189, 0, frame);
+  Serial.println(" . floodFill");
+  SE0352.fillContour(104, 189, 0, frame);
   Serial.println(" . fillCircle");
   SE0352.fillCircle(60, 189, 25, 0, frame);
 
@@ -68,8 +77,20 @@ void graphicDemo() {
   for (x = 120; x < 220; x += 2) SE0352.drawVLine(x, 139, 239, 0, frame);
   Serial.println(" . HLines [229:349] 139 to 239 step 2");
   for (uint16_t y = 139; y < 240; y += 2) SE0352.drawHLine(229, y, 349, 0, frame);
+
+  uint16_t points[] = {
+    110, 0, 140, 25,
+    140, 50, 110, 75,
+    85, 50, 85, 25, 110, 0
+  };
+  Serial.println(" . drawPolygon");
+  SE0352.drawPolygon(points, 7, 0, frame);
+  Serial.println(" . floodFill");
+  SE0352.fillContour(110, 50, 0, frame);
   SE0352.send(frame);
   Serial.println(" done!");
+  SE0352.send(frame);
+  SE0352.sleep();
 }
 
 void setup() {
@@ -80,7 +101,7 @@ void setup() {
 }
 
 void loop() {
-  SE0352.fill(PIC_WHITE);
+  SE0352.fillScreen(PIC_WHITE);
   delay(1000);
   Serial.println("gImage_1");
   SE0352.send(gImage_1);

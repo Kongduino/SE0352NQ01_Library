@@ -55,7 +55,7 @@ void SE0352NQ01::EPD_init(void) {
   EPD_W21_WriteCMD(0x01); // POWER SETTING PWR
   EPD_W21_WriteDATA(0x03); // x x x x x x VDS_EN VDG_EN
   EPD_W21_WriteDATA(0x10); // x x x VCOM_SLWE VGH[3:0] VGH=20V, VGL=-20V
-  EPD_W21_WriteDATA(0x3F); // x x VSH[5:0]  VSH = 15V
+  EPD_W21_WriteDATA(0x3F); // x x VSH[5:0] VSH = 15V
   EPD_W21_WriteDATA(0x3F); // x x VSL[5:0] VSL=-15V
   EPD_W21_WriteDATA(0x03); // OPTEN VDHR[6:0] VHDR=6.4V
   // T_VDS_OFF[1:0] 00=1 frame; 01=2 frame; 10=3 frame; 11=4 frame
@@ -65,7 +65,7 @@ void SE0352NQ01::EPD_init(void) {
   EPD_W21_WriteDATA(0x3D); // x x BT_PHC[5:0]
   EPD_W21_WriteCMD(0x60); // TCON setting TCON
   EPD_W21_WriteDATA(0x22); // S2G[3:0] G2S[3:0] non-overlap = 12
-  EPD_W21_WriteCMD(0x82); // VCOM_DC setting   VDCS
+  EPD_W21_WriteCMD(0x82); // VCOM_DC setting VDCS
   EPD_W21_WriteDATA(0x07); // x VDCS[6:0] VCOM_DC value= -1.9v 00~3f, 0x12=-1.9v
   EPD_W21_WriteCMD(0x30);
   EPD_W21_WriteDATA(0x09);
@@ -214,16 +214,16 @@ void SE0352NQ01::lut_DU(void) {
 }
 
 void SE0352NQ01::send(uint8_t* picData) {
-  //   EPD_W21_WriteCMD(0x50);
-  //   EPD_W21_WriteDATA(0xD7);
+  // EPD_W21_WriteCMD(0x50);
+  // EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_GC();
   refresh();
 }
 
 void SE0352NQ01::send_DU(uint8_t* picData) {
-  //   EPD_W21_WriteCMD(0x50);
-  //   EPD_W21_WriteDATA(0xD7);
+  // EPD_W21_WriteCMD(0x50);
+  // EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_DU();
   refresh();
@@ -239,7 +239,7 @@ void SE0352NQ01::PIC_display1(uint8_t* picData) {
   }
 }
 
-void SE0352NQ01::fill(uint8_t NUM) {
+void SE0352NQ01::fillScreen(uint8_t NUM) {
   PIC_display(NUM);
   lut_DU();
 }
@@ -320,10 +320,10 @@ void SE0352NQ01::EPD_W21_WriteDATA(uint8_t data) {
 
 void SE0352NQ01::drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t rotation, uint8_t *buffer) {
   uint16_t x2, x3;
-  if(x0>x1) {
-    x2 = x1; x3 = x0+1;
+  if (x0 > x1) {
+    x2 = x1; x3 = x0 + 1;
   } else {
-    x2 = x0; x3 = x1+1;
+    x2 = x0; x3 = x1 + 1;
   }
   // Serial.printf("hline from %d:%d to %d:%d\n", x2, y0, x3-1, y0);
   for (int16_t x = x2; x < x3; x++) {
@@ -333,10 +333,10 @@ void SE0352NQ01::drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t rotati
 
 void SE0352NQ01::drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   uint16_t y2, y3;
-  if(y0>y1) {
-    y2 = y1; y3 = y0+1;
+  if (y0 > y1) {
+    y2 = y1; y3 = y0 + 1;
   } else {
-    y2 = y0; y3 = y1+1;
+    y2 = y0; y3 = y1 + 1;
   }
   // Serial.printf("vline from %d:%d to %d:%d\n", x0, y2, x0, y3);
   for (int16_t y = y2; y < y3; y++) {
@@ -345,28 +345,28 @@ void SE0352NQ01::drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotati
 }
 
 void SE0352NQ01::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
-  if(x0 == x1 && y0 == y1) {
+  if (x0 == x1 && y0 == y1) {
     // one pixel
     setPixel(x0, y0, rotation, buffer);
     return;
   }
-  if(x0 == x1) {
+  if (x0 == x1) {
     // vertical line
     drawVLine(x0, y0, y1, rotation, buffer);
     return;
   }
-  if(y0 == y1) {
+  if (y0 == y1) {
     // horizontal line
     drawVLine(x0, y0, x1, rotation, buffer);
     return;
   }
   uint16_t x2, x3, y2, y3;
-  if(x0>x1) {
-    x2 = x1; x3 = x0+1;
-    y2 = y1; y3 = y0+1;
+  if (x0 > x1) {
+    x2 = x1; x3 = x0 + 1;
+    y2 = y1; y3 = y0 + 1;
   } else {
-    x2 = x0; x3 = x1+1;
-    y2 = y0; y3 = y1+1;
+    x2 = x0; x3 = x1 + 1;
+    y2 = y0; y3 = y1 + 1;
   }
   int16_t dx = x3 - x2;
   int16_t dy = y3 - y2;
@@ -401,7 +401,7 @@ void SE0352NQ01::drawCirclePoints(uint16_t xc, uint16_t yc, uint16_t x, uint16_t
 void SE0352NQ01::drawFillCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer, uint8_t fill) {
   int16_t x = 0, y = r;
   int16_t d = 3 - 2 * r;
-  if(fill==0) drawCirclePoints(xc, yc, x, y, rotation, buffer);
+  if (fill == 0) drawCirclePoints(xc, yc, x, y, rotation, buffer);
   else fillCirclePoints(xc, yc, x, y, rotation, buffer);
   while (y >= x) {
     x++;
@@ -411,7 +411,7 @@ void SE0352NQ01::drawFillCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t ro
       y--;
       d = d + 4 * (x - y) + 10;
     } else d = d + 4 * x + 6;
-    if(fill==0) drawCirclePoints(xc, yc, x, y, rotation, buffer);
+    if (fill == 0) drawCirclePoints(xc, yc, x, y, rotation, buffer);
     else fillCirclePoints(xc, yc, x, y, rotation, buffer);
   }
 }
@@ -467,10 +467,9 @@ void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
 }
 
 void SE0352NQ01::drawPolygon(uint16_t *points, uint16_t len, uint8_t rotation, uint8_t *buffer) {
-  Serial.printf("size of points: %d\n", sizeof(points)/sizeof(points[0]));
-  for (uint16_t x = 0; x < len-1; x++) {
+  for (uint16_t x = 0; x < len - 1; x++) {
     // Serial.printf("line from %d:%d to %d:%d\n", points[x*2], points[x*2+1], points[x*2+2], points[x*2+3]);
-    drawLine(points[x*2], points[x*2+1], points[x*2+2], points[x*2+3], rotation, buffer);
+    drawLine(points[x * 2], points[x * 2 + 1], points[x * 2 + 2], points[x * 2 + 3], rotation, buffer);
   }
 }
 
@@ -504,10 +503,105 @@ void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buf
   buffer[bytePos] = af;
 }
 
+uint8_t SE0352NQ01::getPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
+  uint8_t anders[8] = {
+    0b10000000, 0b01000000, 0b00100000, 0b00010000,
+    0b00001000, 0b00000100, 0b00000010, 0b00000001
+  };
+  uint16_t x0, y0, ratio;
+  if (rotation == 0) {
+    x0 = y;
+    y0 = 360 - x;
+    ratio = 30;
+  } else if (rotation == 2) {
+    x0 = 240 - y;
+    y0 = x;
+    ratio = 30;
+  } else if (rotation == 1) {
+    x0 = x;
+    y0 = y;
+    ratio = 30;
+  } else if (rotation == 3) {
+    x0 = 240 - x;
+    y0 = 360 - y;
+    ratio = 30;
+  }
+  uint16_t bytePos = y0 * ratio + x0 / 8;
+  uint8_t n = (x0 % 8); // (7 - (x % 8));
+  uint8_t bf = buffer[bytePos];
+  uint8_t af = bf & anders[n];
+  if (af == 0) return PIC_BLACK;
+  else return PIC_WHITE;
+}
+
+void SE0352NQ01::fillContour(uint16_t iXseed, uint16_t iYseed, uint8_t rotation, uint8_t *buffer) {
+  /*
+    https://www.rosettacode.org/wiki/Bitmap/Flood_fill#Simple_and_complete_example_in_C89
+    fills contour with black border using seed point inside contour and horizontal lines.
+    it starts from seed point, saves max right(iXmaxLocal) and max left (iXminLocal) interior points of horizontal line,
+    in new line (iY+1 or iY-1) it computes new interior point: iXmidLocal=iXminLocal + (iXmaxLocal-iXminLocal)/2;
+    result is stored in _data array : 1D array of 1-bit colors (shades of gray);
+    it does not check if index of _data array is good so memory error is possible
+  */
+  // iYmax depends on rotation: landscape = 240, portrait = 360
+  uint16_t iYmax = 240;
+  if (rotation == 1 || rotation == 3) iYmax = 360;
+  uint16_t iX, /* seed integer coordinate */
+           iY = iYseed,
+           /* most interior point of line iY */
+           iXmidLocal = iXseed,
+           /* min and max of interior points of horizontal line iY */
+           iXminLocal,
+           iXmaxLocal;
+  uint16_t i ; /* index of _data array */;
+  /* --------- move up --------------- */
+  do {
+    iX = iXmidLocal;
+    /* move to right */
+    while (getPixel(iX, iY, rotation, buffer) == PIC_WHITE) {
+      setPixel(iX, iY, rotation, buffer);
+      iX += 1;
+    }
+    iXmaxLocal = iX - 1;
+    /* move to left */
+    iX = iXmidLocal - 1;
+    while (getPixel(iX, iY, rotation, buffer) == PIC_WHITE) {
+      setPixel(iX, iY, rotation, buffer);
+      iX -= 1;
+    }
+    iXminLocal = iX + 1;
+    iY += 1; /* move up */
+    iXmidLocal = iXminLocal + (iXmaxLocal - iXminLocal) / 2; /* new iX inside contour */
+    if (getPixel(iXmidLocal, iY, rotation, buffer) == PIC_BLACK) break; /* it should not cross the border */
+  } while (iY < iYmax);
+  /* ------ move down ----------------- */
+  iXmidLocal = iXseed;
+  iY = iYseed - 1;
+  do {
+    iX = iXmidLocal;
+    /* move to right */
+    while (getPixel(iX, iY, rotation, buffer) == PIC_WHITE) {
+      setPixel(iX, iY, rotation, buffer);
+      iX += 1;
+    }
+    iXmaxLocal = iX - 1;
+    /* move to left */
+    iX = iXmidLocal - 1;
+    while (getPixel(iX, iY, rotation, buffer) == PIC_WHITE) {
+      setPixel(iX, iY, rotation, buffer);
+      iX -= 1;
+    }
+    iXminLocal = iX + 1;
+    iY -= 1; /* move down */
+    iXmidLocal = iXminLocal + (iXmaxLocal - iXminLocal) / 2; /* new iX inside contour */
+    if (getPixel(iXmidLocal, iY, rotation, buffer) == PIC_BLACK) break; /* it should not cross the border */
+  } while (0 < iY);
+}
+
 void SE0352NQ01::drawBitmap(
   uint8_t width, uint8_t height, uint16_t posX, uint16_t posY,
   int8_t xOffset, int8_t yOffset, uint16_t bitmapOffset,
-  uint8_t *buffer, uint8_t *bitmap, uint8_t rotation = 0
+  uint8_t *buffer, uint8_t *bitmap, uint8_t rotation
 ) {
   uint8_t anders[8] = {
     0b01111111, 0b10111111, 0b11011111, 0b11101111,
@@ -631,10 +725,10 @@ uint16_t SE0352NQ01::bs(const uint8_t *lst, uint16_t sparseLen, uint16_t val) {
     }
     if (v < val) {
       low = m + 1;
-      // Serial.printf("  %04x < %04x: setting low to %d, high stays at %d\n", v, val, low, high);
+      // Serial.printf(" %04x < %04x: setting low to %d, high stays at %d\n", v, val, low, high);
     } else {
       high = m - 1;
-      // Serial.printf("  %04x > %04x: setting high to %d, low stays at %d\n", v, val, high, low);
+      // Serial.printf(" %04x > %04x: setting high to %d, low stays at %d\n", v, val, high, low);
     }
     count += 1;
   }
