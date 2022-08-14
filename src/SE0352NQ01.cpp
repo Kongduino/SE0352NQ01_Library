@@ -281,14 +281,11 @@ void SE0352NQ01::KEY_Scan(void) {
 
 void SE0352NQ01::EPD_Reset(void) {
   EPD_W21_RST_1;
-  // driver_delay_xms(10); // At least 10ms delay
-  delay(10);
+  driver_delay_xms(10); // At least 10ms delay
   EPD_W21_RST_0; // Module reset
-  // driver_delay_xms(100); // At least 10ms delay
-  delay(100);
+  driver_delay_xms(100); // At least 10ms delay
   EPD_W21_RST_1;
-  // driver_delay_xms(100); // At least 10ms delay
-  delay(100);
+  driver_delay_xms(100); // At least 10ms delay
 }
 
 // ********************SPI迡嚙踝蕭嚙豎綽蕭硌嚙踝蕭****************************
@@ -469,7 +466,8 @@ void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
   }
 }
 
-void SE0352NQ01::drawPolygon(uint16_t * points, uint16_t len, uint8_t rotation, uint8_t *buffer) {
+void SE0352NQ01::drawPolygon(uint16_t *points, uint16_t len, uint8_t rotation, uint8_t *buffer) {
+  Serial.printf("size of points: %d\n", sizeof(points)/sizeof(points[0]));
   for (uint16_t x = 0; x < len-1; x++) {
     // Serial.printf("line from %d:%d to %d:%d\n", points[x*2], points[x*2+1], points[x*2+2], points[x*2+3]);
     drawLine(points[x*2], points[x*2+1], points[x*2+2], points[x*2+3], rotation, buffer);
