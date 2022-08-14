@@ -55,13 +55,13 @@ There are 4 levels of rotation: 0 & 2 (Landscape), and 1 & 3 (Portrait). Rotatio
 I have added a few drawing primitives:
 
 * `void setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer);`
-* `void drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t *buffer, uint8_t rotation);`
-* `void drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
-* `void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
-* `void drawCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rotation);`
-* `void fillCircle(int xc, int yc, int r, uint8_t *buffer, uint8_t rotation);`
-* `void drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
-* `void fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *buffer, uint8_t rotation);`
+* `void drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t rotation, uint8_t *buffer);`
+* `void drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
+* `void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
+* `void drawCircle(int xc, int yc, int r, uint8_t rotation, uint8_t *buffer);`
+* `void fillCircle(int xc, int yc, int r, uint8_t rotation, uint8_t *buffer);`
+* `void drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
+* `void fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
 * `void drawPolygon(uint16_t * points, uint16_t len, uint8_t rotation, uint8_t *buffer)`
 
 ![Drawing_Functions](assets/Drawing_Functions.png)
