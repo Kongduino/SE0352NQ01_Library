@@ -511,7 +511,7 @@ uint8_t SE0352NQ01::getPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *
     x0 = 239 - x;
     y0 = 359 - y;
   }
-  uint16_t bytePos = y0 * 30+ x0 / 8;
+  uint16_t bytePos = y0 * 30 + x0 / 8;
   uint8_t n = (x0 % 8); // (7 - (x % 8));
   uint8_t bf = buffer[bytePos];
   uint8_t af = bf & anders[n];
@@ -614,7 +614,7 @@ void SE0352NQ01::drawBitmap(
           x0 = 239 - (posX + x + xOffset);
           y0 = 359 - (posY + yOffset + y);
         }
-        uint16_t bytePos = y0 * 30+ x0 / 8;
+        uint16_t bytePos = y0 * 30 + x0 / 8;
         uint8_t n = (x0 % 8); // (7 - (x % 8));
         uint8_t bf = buffer[bytePos];
         uint8_t af = bf & anders[n];
@@ -664,6 +664,7 @@ void SE0352NQ01::drawUnicode(
     uint8_t ln = (next_offs - doff);
     uint8_t w = ln * 8 / myHeight;
     drawBitmap(w, myHeight, posX, posY, 0, 0, doff, buffer, myFont, rotation);
+#ifdef SHOW_OFF_SE0352
     posX += w;
     uint8_t lCount = 0;
     for (uint16_t i = doff; i < next_offs; i++) {
@@ -682,6 +683,7 @@ void SE0352NQ01::drawUnicode(
       }
     }
     Serial.write('\n');
+#endif
   }
 }
 
@@ -748,10 +750,10 @@ void SE0352NQ01::partialRefresh(
     ys = ye;
     ye = temp;
   }
-  Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
+  // Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
   xs &= 0b111111000;
   xe = (xe & 0b111111000) | 0b111;
-  Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
+  // Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
   if (rotation == 0) {
     x0 = ys & 0xFF;
     y0 = 359 - xs;
@@ -773,7 +775,7 @@ void SE0352NQ01::partialRefresh(
     x1 = 239 - xe;
     y1 = 359 - ye;
   }
-  Serial.printf("Final coordinates: %d:%d %d:%d\n", x0, y0, x1, y1);
+  // Serial.printf("Final coordinates: %d:%d %d:%d\n", x0, y0, x1, y1);
   // HRST[7:3] HRED[7:3]
   // Horizontal 8-pixel channel bank. (value 00h~1Dh)
   // 30 possibilities * 8 (last three bits @ 0 = X << 3)
