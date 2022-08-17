@@ -68,6 +68,7 @@ class SE0352NQ01 {
     void drawPolygon(uint16_t *, uint16_t, uint8_t, uint8_t *);
     void floodFill(uint16_t, uint16_t, uint8_t, uint8_t *);
     void fillContour(uint16_t, uint16_t, uint8_t, uint8_t *);
+    void partialRefresh(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t*);
 
   private:
     void EPD_Reset(void);
@@ -80,20 +81,21 @@ class SE0352NQ01 {
     void driver_delay_xms(unsigned long xms);
     void DELAY_S(unsigned int delaytime);
     void DELAY_M(unsigned int delaytime);
-    void EPD_W21_WriteCMD(uint8_t);
-    void EPD_W21_WriteDATA(uint8_t);
     void SPI_Write(uint8_t);
     void get_ch2(uint16_t, const uint8_t*, uint16_t, uint8_t*, uint8_t);
     uint16_t bs(const uint8_t *, uint16_t, uint16_t);
     void drawFillCircle(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *, uint8_t);
     void drawCirclePoints(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void fillCirclePoints(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
+    void EPD_W21_WriteCMD(uint8_t);
+    void EPD_W21_WriteDATA(uint8_t);
 
     // LUT
-    void lut_GC(void);
     void lut_DU(void);
+    void lut_GC(void);
     void lut_5S(void);
     unsigned long LUT_Flag = 0;
+
     uint16_t doff, next_offs, myHeight, myWidth;
 };
 
@@ -139,8 +141,7 @@ const uint8_t lut_R20_DU[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-const uint8_t lut_R21_DU[] =
-{
+const uint8_t lut_R21_DU[] = {
   0x01, 0x0f, 0x01, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -165,8 +166,7 @@ const uint8_t lut_R24_DU[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-const uint8_t lut_vcom[] =
-{
+const uint8_t lut_vcom[] = {
   0x01, 0x19, 0x19, 0x19, 0x19, 0x01, 0x01, 0x01, 0x19, 0x19, 0x19, 0x01, 0x01, 0x01, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00

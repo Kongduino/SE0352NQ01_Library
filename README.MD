@@ -64,11 +64,13 @@ I have added a few drawing primitives:
 * `void fillCircle(int xc, int yc, int r, uint8_t rotation, uint8_t *buffer);`
 * `void fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);`
 * `void fillContour(uint16_t iXseed, uint16_t iYseed, uint8_t rotation, uint8_t *buffer);`
+* `void partialRefresh(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint8_t rotation, uint8_t* buffer);`
 
 `fillContour()` works pretty well, but in some cases it may require more than one call. For example, in the image below, `fillContour()` had to be called twice for the narrow disk: I drew two circles a few pixels apart, then called `fillContour()` once on the left, and once on the right.
 
-
 ![Drawing_Functions](assets/Drawing_Functions.png)
+
+`partialRefresh` is a bit finicky, but I got it to work pretty well. It too takes care of rotation. I'll upload a video with the new demo ASAP.
 
 ## Demo
 

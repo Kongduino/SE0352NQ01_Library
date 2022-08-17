@@ -10,6 +10,45 @@
 
 unsigned char frame[10800];
 
+void partialDemo() {
+  Serial.println("Partial Refresh Demo (??)");
+  memset(frame, PIC_WHITE, 10800);
+  SE0352.fillScreen(PIC_WHITE);
+  SE0352.refresh();
+  delay(100);
+  SE0352.fillCircle(300, 100, 30, 0, frame);
+  SE0352.send(frame);
+  SE0352.refresh();
+  delay(100);
+
+  Serial.println("partialRefresh 0");
+  SE0352.fillCircle(300, 200, 30, 0, frame);
+  uint16_t zhongwenyekeyi[] = {0x4e2d, 0x6587, 0x4E5F, 0x53EF, 0x4EE5}; // 中文也可以
+  SE0352.drawUnicode(zhongwenyekeyi, 5, 0, 20, CJK16ptBfont, CJK16ptBsparse, CJK16ptBSparseLen, CJK16ptBHeight, 0, frame);
+  SE0352.drawUnicode(zhongwenyekeyi, 5, 0, 223, CJK16ptBfont, CJK16ptBsparse, CJK16ptBSparseLen, CJK16ptBHeight, 0, frame);
+  for (uint8_t z = 0; z < 5; z++) {
+    digitalWrite(PIN_LED2, HIGH);
+    SE0352.partialRefresh(z * 16, 16, z * 16 + 15, 39, 0, frame);
+    delay(100);
+    digitalWrite(PIN_LED2, LOW);
+  }
+  delay(1000);
+  Serial.println("partialRefresh 1");
+  digitalWrite(PIN_LED2, HIGH);
+  SE0352.partialRefresh(0, 208, 79, 239, 0, frame);
+  delay(100);
+  digitalWrite(PIN_LED2, LOW);
+  delay(1000);
+
+  Serial.println("partialRefresh 2");
+  digitalWrite(PIN_LED2, HIGH);
+  SE0352.partialRefresh(270, 170, 330, 230, 0, frame);
+  delay(100);
+  digitalWrite(PIN_LED2, LOW);
+  Serial.println("done.");
+  digitalWrite(LED_BUILTIN, LOW);
+}
+
 void textDemo() {
   Serial.print("Text Demo 1/2");
   memset(frame, PIC_WHITE, 10800);
@@ -29,6 +68,7 @@ void textDemo() {
   Serial.write('.');
   SE0352.drawUnicode(zhongwenyekeyi, 5, 40, 65, CJK16ptBfont, CJK16ptBsparse, CJK16ptBSparseLen, CJK16ptBHeight, 2, frame);
   SE0352.send(frame);
+  SE0352.refresh();
   Serial.println(" done!");
 }
 
@@ -84,33 +124,63 @@ void graphicDemo() {
   };
   Serial.println(" . drawPolygon");
   SE0352.drawPolygon(points, 7, 0, frame);
+  SE0352.send(frame);
+  SE0352.refresh();
+  delay(1000);
   Serial.println(" . floodFill");
   SE0352.fillContour(110, 50, 0, frame);
-  SE0352.send(frame);
+  SE0352.partialRefresh(85, 0, 140, 75, 0, frame);
   Serial.println(" done!");
-  SE0352.send(frame);
-  SE0352.sleep();
 }
 
 void setup() {
-  delay(5000);
+  pinMode(PIN_LED1, OUTPUT);
+  pinMode(PIN_LED2, OUTPUT);
+  digitalWrite(PIN_LED1, HIGH);
+  // Initialize Serial for debug output
+  time_t timeout = millis();
   Serial.begin(115200);
+  while (!Serial) {
+    if ((millis() - timeout) < 5000) {
+      delay(100);
+    } else {
+      break;
+    }
+  }
+  delay(500);
   delay(500);
   Serial.println("EPD TEST");
+  digitalWrite(PIN_LED1, LOW);
 }
 
 void loop() {
+  digitalWrite(PIN_LED2, HIGH);
+  memset(frame, PIC_WHITE, 10800);
   SE0352.fillScreen(PIC_WHITE);
-  delay(1000);
+  SE0352.refresh();
   Serial.println("gImage_1");
   SE0352.send(gImage_1);
+  SE0352.refresh();
+  digitalWrite(PIN_LED2, LOW);
   delay(5000);
+  digitalWrite(PIN_LED2, HIGH);
   Serial.println("gImage_Kongduino");
   SE0352.send(gImage_Kongduino);
+  SE0352.refresh();
+  digitalWrite(PIN_LED2, LOW);
   delay(5000);
+  digitalWrite(PIN_LED2, HIGH);
   Serial.println("textDemo");
   textDemo();
+  digitalWrite(PIN_LED2, LOW);
   delay(5000);
+  digitalWrite(PIN_LED2, HIGH);
+  partialDemo();
+  digitalWrite(PIN_LED2, LOW);
+  delay(5000);
+  digitalWrite(PIN_LED2, HIGH);
   graphicDemo();
-  delay(5000);
+  digitalWrite(PIN_LED2, LOW);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(30000);
 }

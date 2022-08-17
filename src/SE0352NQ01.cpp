@@ -214,21 +214,14 @@ void SE0352NQ01::lut_DU(void) {
 }
 
 void SE0352NQ01::send(uint8_t* picData) {
-  // EPD_W21_WriteCMD(0x50);
-  // EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_GC();
-  refresh();
 }
 
 void SE0352NQ01::send_DU(uint8_t* picData) {
-  // EPD_W21_WriteCMD(0x50);
-  // EPD_W21_WriteDATA(0xD7);
   PIC_display1(picData);
   lut_DU();
-  refresh();
 }
-
 
 void SE0352NQ01::PIC_display1(uint8_t* picData) {
   unsigned int i;
@@ -241,19 +234,19 @@ void SE0352NQ01::PIC_display1(uint8_t* picData) {
 
 void SE0352NQ01::fillScreen(uint8_t NUM) {
   PIC_display(NUM);
-  lut_DU();
+  lut_GC();
 }
 
 void SE0352NQ01::PIC_display(uint8_t NUM) {
   unsigned int row, column;
-  unsigned int pcnt;
-  pcnt = 0;
+  // unsigned int pcnt;
+  // pcnt = 0;
   EPD_W21_WriteCMD(0x13); // Transfer new data
   for (column = 0; column < Gate_Pixel; column++) {
     for (row = 0; row < Source_Pixel / 8; row++) {
       switch (NUM) {
         case PIC_WHITE:
-          EPD_W21_WriteDATA(0xAA);
+          EPD_W21_WriteDATA(0xFF);
           break;
         case PIC_BLACK:
           EPD_W21_WriteDATA(0x00);
@@ -478,25 +471,21 @@ void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buf
     0b01111111, 0b10111111, 0b11011111, 0b11101111,
     0b11110111, 0b11111011, 0b11111101, 0b11111110
   };
-  uint16_t x0, y0, ratio;
+  uint16_t x0, y0;
   if (rotation == 0) {
     x0 = y;
-    y0 = 360 - x;
-    ratio = 30;
+    y0 = 359 - x;
   } else if (rotation == 2) {
-    x0 = 240 - y;
+    x0 = 239 - y;
     y0 = x;
-    ratio = 30;
   } else if (rotation == 1) {
     x0 = x;
     y0 = y;
-    ratio = 30;
   } else if (rotation == 3) {
-    x0 = 240 - x;
-    y0 = 360 - y;
-    ratio = 30;
+    x0 = 239 - x;
+    y0 = 359 - y;
   }
-  uint16_t bytePos = y0 * ratio + x0 / 8;
+  uint16_t bytePos = y0 * 30 + x0 / 8;
   uint8_t n = (x0 % 8); // (7 - (x % 8));
   uint8_t bf = buffer[bytePos];
   uint8_t af = bf & anders[n];
@@ -508,25 +497,21 @@ uint8_t SE0352NQ01::getPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *
     0b10000000, 0b01000000, 0b00100000, 0b00010000,
     0b00001000, 0b00000100, 0b00000010, 0b00000001
   };
-  uint16_t x0, y0, ratio;
+  uint16_t x0, y0;
   if (rotation == 0) {
     x0 = y;
-    y0 = 360 - x;
-    ratio = 30;
+    y0 = 359 - x;
   } else if (rotation == 2) {
-    x0 = 240 - y;
+    x0 = 239 - y;
     y0 = x;
-    ratio = 30;
   } else if (rotation == 1) {
     x0 = x;
     y0 = y;
-    ratio = 30;
   } else if (rotation == 3) {
-    x0 = 240 - x;
-    y0 = 360 - y;
-    ratio = 30;
+    x0 = 239 - x;
+    y0 = 359 - y;
   }
-  uint16_t bytePos = y0 * ratio + x0 / 8;
+  uint16_t bytePos = y0 * 30+ x0 / 8;
   uint8_t n = (x0 % 8); // (7 - (x % 8));
   uint8_t bf = buffer[bytePos];
   uint8_t af = bf & anders[n];
@@ -615,25 +600,21 @@ void SE0352NQ01::drawBitmap(
       uint8_t c = bitmap[myByte + bitmapOffset];
       if (c & bitMask) {
         // Set bit
-        uint16_t x0, y0, ratio;
+        uint16_t x0, y0;
         if (rotation == 0) {
           x0 = (posY + yOffset + y);
-          y0 = 360 - (posX + x + xOffset);
-          ratio = 30;
+          y0 = 359 - (posX + x + xOffset);
         } else if (rotation == 2) {
-          x0 = 240 - (posY + yOffset + y);
+          x0 = 239 - (posY + yOffset + y);
           y0 = (posX + x + xOffset);
-          ratio = 30;
         } else if (rotation == 1) {
           x0 = (posX + x + xOffset);
           y0 = (posY + yOffset + y);
-          ratio = 30;
         } else if (rotation == 3) {
-          x0 = 240 - (posX + x + xOffset);
-          y0 = 360 - (posY + yOffset + y);
-          ratio = 30;
+          x0 = 239 - (posX + x + xOffset);
+          y0 = 359 - (posY + yOffset + y);
         }
-        uint16_t bytePos = y0 * ratio + x0 / 8;
+        uint16_t bytePos = y0 * 30+ x0 / 8;
         uint8_t n = (x0 % 8); // (7 - (x % 8));
         uint8_t bf = buffer[bytePos];
         uint8_t af = bf & anders[n];
@@ -750,6 +731,84 @@ void SE0352NQ01::get_ch2(uint16_t ch, const uint8_t* sparse, uint16_t sparseLen,
   doff += 2;
   next_offs = doff + ((myWidth - 1) / 8 + 1) * fHeight;
   myHeight = fHeight;
+}
+
+void SE0352NQ01::partialRefresh(
+  uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd,
+  uint8_t rotation, uint8_t* buffer
+) {
+  uint16_t x0, x1, xs = xStart, xe = xEnd, temp, y0, ys = yStart, y1, ye = yEnd;
+  if (xs > xe) {
+    temp = xs;
+    xs = xe;
+    xe = temp;
+  }
+  if (ys > ye) {
+    temp = ys;
+    ys = ye;
+    ye = temp;
+  }
+  Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
+  xs &= 0b111111000;
+  xe = (xe & 0b111111000) | 0b111;
+  Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
+  if (rotation == 0) {
+    x0 = ys & 0xFF;
+    y0 = 359 - xs;
+    x1 = ye & 0xFF;
+    y1 = 359 - xe;
+  } else if (rotation == 2) {
+    x0 = (239 - ys) & 0xFF;
+    y0 = x0;
+    x1 = (239 - ye) & 0xFF;
+    y1 = xe;
+  } else if (rotation == 1) {
+    x0 = xs;
+    y0 = ys;
+    x1 = xe;
+    y1 = ye;
+  } else if (rotation == 3) {
+    x0 = 239 - xs;
+    y0 = 359 - ys;
+    x1 = 239 - xe;
+    y1 = 359 - ye;
+  }
+  Serial.printf("Final coordinates: %d:%d %d:%d\n", x0, y0, x1, y1);
+  // HRST[7:3] HRED[7:3]
+  // Horizontal 8-pixel channel bank. (value 00h~1Dh)
+  // 30 possibilities * 8 (last three bits @ 0 = X << 3)
+  // for HRED, last 3 bits set to 1.
+  // so eg 0x1D = 29 * 8 = 232 ~ 239, ie rows 232 to 239
+  // Send command
+  uint8_t counter = 0, py00, py01, py10, py11;
+  py00 = y1 >> 8;
+  py01 = y1 & 0xFF;
+  py10 = y0 >> 8;
+  py11 = y0 & 0xFF;
+  SE0352.EPD_W21_WriteCMD(0x91);
+  SE0352.EPD_W21_WriteCMD(0x90);
+  SE0352.EPD_W21_WriteDATA((uint8_t)x0); // HRST
+  SE0352.EPD_W21_WriteDATA((uint8_t)x1); // HRED
+  SE0352.EPD_W21_WriteDATA(py00);
+  SE0352.EPD_W21_WriteDATA(py01); // VRST
+  SE0352.EPD_W21_WriteDATA(py10);
+  SE0352.EPD_W21_WriteDATA(py11); // VRED
+  SE0352.EPD_W21_WriteDATA(0x01);
+  SE0352.EPD_W21_WriteCMD(0x13);
+  for (uint16_t y = y1; y <= y0; y++) {
+    // rows
+    for (uint16_t x = x0; x <= x1; x += 8) {
+      // cols / 8 bits
+      uint16_t btPos = y * 30 + (x / 8);
+      SE0352.EPD_W21_WriteDATA(buffer[btPos]);
+      // Serial.printf("%02x %d ", buffer[btPos], btPos);
+      counter += 1;
+    }
+    // Serial.write('\n');
+  }
+  SE0352.lut_GC();
+  SE0352.refresh();
+  SE0352.EPD_W21_WriteCMD(0x92);
 }
 
 SE0352NQ01 SE0352;

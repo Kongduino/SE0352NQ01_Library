@@ -39,9 +39,12 @@ drawHLine	KEYWORD2
 drawVLine	KEYWORD2
 drawPolygon	KEYWORD2
 fillContour	KEYWORD2
+partialRefresh	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 PIC_WHITE	LITERAL1
 PIC_BLACK	LITERAL1
+PIN_LED1	LITERAL1
+PIN_LED2	LITERAL1
