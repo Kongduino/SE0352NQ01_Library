@@ -21,25 +21,27 @@ GFXfont 	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-sleep	KEYWORD2
-refresh	KEYWORD2
-send	KEYWORD2
-send_DU	KEYWORD2
-fillScreen	KEYWORD2
-drawString	KEYWORD2
-drawUnicode	KEYWORD2
-drawBitmap	KEYWORD2
+clearPixel	KEYWORD2
 setPixel	KEYWORD2
-drawCircle	KEYWORD2
-fillCircle	KEYWORD2
+clearRect	KEYWORD2
+drawBitmap	KEYWORD2
 drawRect	KEYWORD2
 fillRect	KEYWORD2
+drawCircle	KEYWORD2
+fillCircle	KEYWORD2
+fillContour	KEYWORD2
+fillScreen	KEYWORD2
 drawLine	KEYWORD2
 drawHLine	KEYWORD2
 drawVLine	KEYWORD2
 drawPolygon	KEYWORD2
-fillContour	KEYWORD2
+drawString	KEYWORD2
+drawUnicode	KEYWORD2
 partialRefresh	KEYWORD2
+refresh	KEYWORD2
+send	KEYWORD2
+send_DU	KEYWORD2
+sleep	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

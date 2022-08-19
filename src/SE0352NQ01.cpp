@@ -274,11 +274,11 @@ void SE0352NQ01::KEY_Scan(void) {
 
 void SE0352NQ01::EPD_Reset(void) {
   EPD_W21_RST_1;
-  driver_delay_xms(10); // At least 10ms delay
+  driver_delay_xms(10); // At least 10 ms delay
   EPD_W21_RST_0; // Module reset
-  driver_delay_xms(100); // At least 10ms delay
+  driver_delay_xms(100); // At least 100 ms delay
   EPD_W21_RST_1;
-  driver_delay_xms(100); // At least 10ms delay
+  driver_delay_xms(100); // At least 10 ms delay
 }
 
 // ********************SPI迡嚙踝蕭嚙豎綽蕭硌嚙踝蕭****************************
@@ -442,6 +442,25 @@ void SE0352NQ01::drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
   drawVLine(fx1, fy0, fy1, rotation, buffer);
 }
 
+void SE0352NQ01::clearRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
+  uint16_t fx0, fx1, fy0, fy1, x, y;
+  if (x1 < x0) {
+    fx0 = x1; fx1 = x0 + 1;
+  } else {
+    fx1 = x1 + 1; fx0 = x0;
+  }
+  if (y1 < y0) {
+    fy0 = y1; fy1 = y0 + 1;
+  } else {
+    fy1 = y1 + 1; fy0 = y0;
+  }
+  for (y = fy0; y < fy1; y++) {
+    for (x = fx0; x < fx1; x++) {
+      clearPixel(x, y, rotation, buffer);
+    }
+  }
+}
+
 void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   uint16_t fx0, fx1, fy0, fy1, x, y;
   if (x1 < x0) {
@@ -464,6 +483,27 @@ void SE0352NQ01::drawPolygon(uint16_t *points, uint16_t len, uint8_t rotation, u
     // Serial.printf("line from %d:%d to %d:%d\n", points[x*2], points[x*2+1], points[x*2+2], points[x*2+3]);
     drawLine(points[x * 2], points[x * 2 + 1], points[x * 2 + 2], points[x * 2 + 3], rotation, buffer);
   }
+}
+
+void SE0352NQ01::clearPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
+  uint16_t x0, y0;
+  if (rotation == 0) {
+    x0 = y;
+    y0 = 359 - x;
+  } else if (rotation == 2) {
+    x0 = 239 - y;
+    y0 = x;
+  } else if (rotation == 1) {
+    x0 = x;
+    y0 = y;
+  } else if (rotation == 3) {
+    x0 = 239 - x;
+    y0 = 359 - y;
+  }
+  uint16_t bytePos = y0 * 30 + x0 / 8;
+  uint8_t n = (x0 % 8); // (7 - (x % 8));
+  uint8_t bf = buffer[bytePos];
+  buffer[bytePos] = bf | (1 << (7 - n));
 }
 
 void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
@@ -624,8 +664,17 @@ void SE0352NQ01::drawBitmap(
   }
 }
 
-void SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont myFont, uint8_t rotation, uint8_t* buffer) {
+uint16_t SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont myFont, uint8_t rotation, uint8_t* buffer) {
   uint8_t ln = strlen(myStr);
+  uint16_t strLen = 0;
+  uint16_t right, bottom;
+  if(rotation == 0||rotation == 2) {
+    right = 359;
+    bottom = 239;
+  } else {
+    right = 239;
+    bottom = 359;
+}
   for (uint8_t i = 0; i < ln; i++) {
     uint8_t c = myStr[i] - 32;
     GFXglyph glyph = myFont.glyph[c];
@@ -633,21 +682,30 @@ void SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont m
     uint8_t height = glyph.height;
     int8_t xOffset = glyph.xOffset;
     int8_t yOffset = glyph.yOffset;
-
-    if (posX + width > 359) {
-      // overflows the screen --> wrap around
-      posX = 0;
-      posY += myFont.yAdvance;
-      if (posY + yOffset + height > 239) return; // Stop if we are outside the screen
-    }
-
     uint16_t bitmapOffset = glyph.bitmapOffset;
     uint8_t xAdvance = glyph.xAdvance;
     uint8_t nb = height * width / 8;
+    strLen += xAdvance;
+    if (posX + width > right) {
+      // overflows the screen --> wrap around
+      posX = 0;
+      posY += myFont.yAdvance;
+      if (posY + yOffset + height > bottom) return strLen; // Stop if we are outside the screen
+    }
     if (nb * 8 < height * width) nb += 1;
     drawBitmap(width, height, posX, posY, xOffset, yOffset, bitmapOffset, buffer, myFont.bitmap, rotation);
     posX += xAdvance;
   }
+  return strLen;
+}
+
+uint16_t SE0352NQ01::strWidth(char *myStr, GFXfont myFont) {
+  uint8_t ln = strlen(myStr);
+  uint16_t strLen = 0;
+  for (uint8_t i = 0; i < ln; i++) {
+    strLen += glyph.xAdvance;
+  }
+  return strLen;
 }
 
 void SE0352NQ01::drawUnicode(

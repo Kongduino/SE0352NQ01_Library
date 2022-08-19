@@ -53,20 +53,23 @@ class SE0352NQ01 {
     void send(uint8_t*);
     void send_DU(uint8_t*);
     void fillScreen(uint8_t);
-    void drawString(char *, uint16_t, uint16_t, GFXfont, uint8_t, uint8_t*);
+    //void drawString(char *, uint16_t, uint16_t, GFXfont, uint8_t, uint8_t*);
+    uint16_t drawString(char *, uint16_t, uint16_t, GFXfont, uint8_t, uint8_t*);
+    uint16_t strWidth(char *, GFXfont);
     void drawUnicode(uint16_t*, uint8_t, uint16_t, uint16_t, uint8_t*, uint8_t*, uint16_t, uint8_t, uint8_t, uint8_t*);
     void drawBitmap(uint8_t, uint8_t, uint16_t, uint16_t, int8_t, int8_t, uint16_t, uint8_t *, uint8_t *, uint8_t);
     void setPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
+    void clearPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
     uint8_t getPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawRect(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void fillRect(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
+    void clearRect(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawCircle(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void fillCircle(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawLine(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawHLine(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawVLine(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void drawPolygon(uint16_t *, uint16_t, uint8_t, uint8_t *);
-    void floodFill(uint16_t, uint16_t, uint8_t, uint8_t *);
     void fillContour(uint16_t, uint16_t, uint8_t, uint8_t *);
     void partialRefresh(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t*);
 
