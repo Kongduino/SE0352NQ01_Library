@@ -701,6 +701,8 @@ uint16_t SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfo
 
 uint16_t SE0352NQ01::strWidth(char *myStr, GFXfont myFont) {
   uint8_t ln = strlen(myStr);
+    uint8_t c = myStr[i] - 32;
+    GFXglyph glyph = myFont.glyph[c];
   uint16_t strLen = 0;
   for (uint8_t i = 0; i < ln; i++) {
     GFXglyph glyph = myFont.glyph[c];
