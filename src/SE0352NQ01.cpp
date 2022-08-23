@@ -703,6 +703,7 @@ uint16_t SE0352NQ01::strWidth(char *myStr, GFXfont myFont) {
   uint8_t ln = strlen(myStr);
   uint16_t strLen = 0;
   for (uint8_t i = 0; i < ln; i++) {
+    GFXglyph glyph = myFont.glyph[c];
     strLen += glyph.xAdvance;
   }
   return strLen;
