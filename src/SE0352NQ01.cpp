@@ -1,5 +1,10 @@
 #include "SE0352NQ01.h"
 
+/*
+  @brief Initializes the EPD
+  @param None
+  @return nothing
+*/
 SE0352NQ01::SE0352NQ01() {
   pinMode(EPD_EN, OUTPUT);
   digitalWrite(EPD_EN, HIGH);
@@ -13,22 +18,42 @@ SE0352NQ01::SE0352NQ01() {
   EPD_init(); // EPD init
 }
 
+/*
+  @brief De-initializes the EPD. In reality does nothing for now.
+  @param None
+  @return nothing
+*/
 SE0352NQ01::~SE0352NQ01() {
 }
 
+/*
+  @brief Delay. Manufacturer-supplied method.
+  @param xus  number of microseconds
+  @return nothing
+*/
 void SE0352NQ01::driver_delay_us(unsigned int xus) {
-  // 1us
+  // 1 µs
   for (; xus > 1; xus--);
 }
 
+/*
+  @brief Delay. Manufacturer-supplied method.
+  @param xus  number of milliseconds
+  @return nothing
+*/
 void SE0352NQ01::driver_delay_xms(unsigned long xms) {
-  // 1ms
+  // 1 ms
   unsigned long i = 0, j = 0;
   for (j = 0; j < xms; j++) {
     for (i = 0; i < 256; i++);
   }
 }
 
+/*
+  @brief Delay. Manufacturer-supplied method.
+  @param xus  number of seconds
+  @return nothing
+*/
 void SE0352NQ01::DELAY_S(unsigned int delaytime) {
   // 1s
   int i, j, k;
@@ -39,13 +64,23 @@ void SE0352NQ01::DELAY_S(unsigned int delaytime) {
   }
 }
 
+/*
+  @brief Delay. Manufacturer-supplied method.
+  @param xus  number of minutes
+  @return nothing
+*/
 void SE0352NQ01::DELAY_M(unsigned int delaytime) {
-  // 1M
+  // 1 mn
   int i;
   for (i = 0; i < delaytime; i++)
     DELAY_S(60);
 }
 
+/*
+  @brief Initializes the EPD
+  @param None
+  @return nothing
+*/
 void SE0352NQ01::EPD_init(void) {
   LUT_Flag = 0;
 #if 1
@@ -82,17 +117,32 @@ void SE0352NQ01::EPD_init(void) {
 #endif
 }
 
+/*
+  @brief Refreshes the EPD
+  @param None
+  @return nothing
+*/
 void SE0352NQ01::refresh(void) {
   EPD_W21_WriteCMD(0x17); // DISPLAY REFRESH
   EPD_W21_WriteDATA(0xA5);
   lcd_chkstatus();
 }
+
+/*
+  @brief Sleeps the EPD
+  @param None
+  @return nothing
+*/
 void SE0352NQ01::sleep(void) {
   EPD_W21_WriteCMD(0X07); // deep sleep
   EPD_W21_WriteDATA(0xA5);
 }
 
-// LUT download
+/*
+  @brief Sends the 5S LUT to the EPD
+  @param None
+  @return nothing
+*/
 void SE0352NQ01::lut_5S(void) {
   unsigned int count;
   EPD_W21_WriteCMD(0x20); // vcom
@@ -130,10 +180,14 @@ void SE0352NQ01::lut_5S(void) {
   }
 }
 
-// LUT download
+/*
+  @brief Sends the GC LUT to the EPD. This is the preferred LUT.
+  @param None
+  @return nothing
+*/
 void SE0352NQ01::lut_GC(void) {
   /*
-    It is recommended to call GC waveform to refresh the screen for normal use.
+      It is recommended to call GC waveform to refresh the screen for normal use.
   */
   unsigned int count;
   EPD_W21_WriteCMD(0x20); // vcom
@@ -171,11 +225,15 @@ void SE0352NQ01::lut_GC(void) {
   }
 }
 
-// LUT download
+/*
+  @brief Sends the DU LUT to the EPD. Faster refresh.
+  @param None
+  @return nothing
+*/
 void SE0352NQ01::lut_DU(void) {
   /*
-    If you use DU waveform to refresh the screen too many times, there will be low shadows.
-    It is recommended to use GC waveform to refresh the screen every 5~10 times after calling DU waveform.
+      If you use DU waveform to refresh the screen too many times, there will be low shadows.
+      It is recommended to use GC waveform to refresh the screen every 5~10 times after calling DU waveform.
   */
   unsigned int count;
   EPD_W21_WriteCMD(0x20); // vcom
@@ -213,16 +271,31 @@ void SE0352NQ01::lut_DU(void) {
   }
 }
 
+/*
+  @brief Sends a full buffer to the EPD, then does a full refresh.
+  @param picData, 10,800 bytes
+  @return nothing
+*/
 void SE0352NQ01::send(uint8_t* picData) {
   PIC_display1(picData);
   lut_GC();
 }
 
+/*
+  @brief Sends a full buffer to the EPD, then does a faster refresh.
+  @param picData, 10,800 bytes
+  @return nothing
+*/
 void SE0352NQ01::send_DU(uint8_t* picData) {
   PIC_display1(picData);
   lut_DU();
 }
 
+/*
+  @brief Sends a full buffer to the EPD.
+  @param picData, 10,800 bytes
+  @return nothing
+*/
 void SE0352NQ01::PIC_display1(uint8_t* picData) {
   unsigned int i;
   EPD_W21_WriteCMD(0x13); // Transfer new data
@@ -232,15 +305,23 @@ void SE0352NQ01::PIC_display1(uint8_t* picData) {
   }
 }
 
+/*
+  @brief Fills the screen with the same color, then does a full refresh.
+  @param NUM: PIC_WHITE or PIC_BLACK
+  @return nothing
+*/
 void SE0352NQ01::fillScreen(uint8_t NUM) {
   PIC_display(NUM);
   lut_GC();
 }
 
+/*
+  @brief Sends a full screen's worth of a single color to the EPD.
+  @param NUM: PIC_WHITE or PIC_BLACK
+  @return nothing
+*/
 void SE0352NQ01::PIC_display(uint8_t NUM) {
   unsigned int row, column;
-  // unsigned int pcnt;
-  // pcnt = 0;
   EPD_W21_WriteCMD(0x13); // Transfer new data
   for (column = 0; column < Gate_Pixel; column++) {
     for (row = 0; row < Source_Pixel / 8; row++) {
@@ -258,10 +339,20 @@ void SE0352NQ01::PIC_display(uint8_t NUM) {
   }
 }
 
+/*
+  @brief Waits while EPD is busy.
+  @param none
+  @return nothing
+*/
 void SE0352NQ01::lcd_chkstatus(void) {
   while (isEPD_W21_BUSY == 0);
 }
 
+/*
+  @brief Waits for Key input. Not used here.
+  @param none
+  @return nothing
+*/
 void SE0352NQ01::KEY_Scan(void) {
   // uint8_t KEY;
   // do {
@@ -272,6 +363,11 @@ void SE0352NQ01::KEY_Scan(void) {
   // driver_delay_xms(20);
 }
 
+/*
+  @brief Resets the EPD.
+  @param none
+  @return nothing
+*/
 void SE0352NQ01::EPD_Reset(void) {
   EPD_W21_RST_1;
   driver_delay_xms(10); // At least 10 ms delay
@@ -281,7 +377,11 @@ void SE0352NQ01::EPD_Reset(void) {
   driver_delay_xms(100); // At least 10 ms delay
 }
 
-// ********************SPI迡嚙踝蕭嚙豎綽蕭硌嚙踝蕭****************************
+/*
+  @brief Writes a single byte to the EPD via SPI.
+  @param value
+  @return nothing
+*/
 void SE0352NQ01::SPI_Write(uint8_t value) {
   uint8_t i;
   for (i = 0; i < 8; i++) {
@@ -293,6 +393,11 @@ void SE0352NQ01::SPI_Write(uint8_t value) {
   }
 }
 
+/*
+  @brief Sends a command to the EPD via SPI.
+  @param value
+  @return nothing
+*/
 void SE0352NQ01::EPD_W21_WriteCMD(uint8_t command) {
   EPD_W21_CS_0;
   EPD_W21_DC_0; // command write
@@ -301,6 +406,11 @@ void SE0352NQ01::EPD_W21_WriteCMD(uint8_t command) {
   EPD_W21_DC_1;
 }
 
+/*
+  @brief Sends data to the EPD via SPI.
+  @param data
+  @return nothing
+*/
 void SE0352NQ01::EPD_W21_WriteDATA(uint8_t data) {
   EPD_W21_MOSI_0;
   EPD_W21_CS_0;
@@ -311,6 +421,15 @@ void SE0352NQ01::EPD_W21_WriteDATA(uint8_t data) {
   EPD_W21_MOSI_0;
 }
 
+/*
+  @brief Draws a horizontal line.
+  @param x0 start, x position
+  @param y0 start, y position
+  @param x1 end, x position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t rotation, uint8_t *buffer) {
   uint16_t x2, x3;
   if (x0 > x1) {
@@ -318,12 +437,20 @@ void SE0352NQ01::drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t rotati
   } else {
     x2 = x0; x3 = x1 + 1;
   }
-  // Serial.printf("hline from %d:%d to %d:%d\n", x2, y0, x3-1, y0);
   for (int16_t x = x2; x < x3; x++) {
     setPixel(x, y0, rotation, buffer);
   }
 }
 
+/*
+  @brief Draws a vertical line.
+  @param x0 start, x position
+  @param y0 start, y position
+  @param y1 end, y position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   uint16_t y2, y3;
   if (y0 > y1) {
@@ -331,12 +458,21 @@ void SE0352NQ01::drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotati
   } else {
     y2 = y0; y3 = y1 + 1;
   }
-  // Serial.printf("vline from %d:%d to %d:%d\n", x0, y2, x0, y3);
   for (int16_t y = y2; y < y3; y++) {
     setPixel(x0, y, rotation, buffer);
   }
 }
 
+/*
+  @brief Draws a line.
+  @param x0 start, x position
+  @param y0 start, y position
+  @param x1 end, x position
+  @param y1 end, y position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   if (x0 == x1 && y0 == y1) {
     // one pixel
@@ -416,14 +552,42 @@ void SE0352NQ01::fillCirclePoints(uint16_t xc, uint16_t yc, uint16_t x, uint16_t
   drawHLine(xc - y, yc - x, xc + y, rotation, buffer);
 }
 
+/*
+  @brief Fills a circle
+  @param xc center point, x position
+  @param yc center point, y position
+  @param r radius
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::fillCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer) {
   drawFillCircle(xc, yc, r, rotation, buffer, 1);
 }
 
+/*
+  @brief Draws a circle
+  @param xc center point, x position
+  @param yc center point, y position
+  @param r radius
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::drawCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer) {
   drawFillCircle(xc, yc, r, rotation, buffer, 0);
 }
 
+/*
+  @brief Draws a rectangle
+  @param x0 start, x position
+  @param y0 start, y position
+  @param x1 end, x position
+  @param y1 end, y position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   uint16_t fx0, fx1, fy0, fy1;
   if (x1 > x0) {
@@ -442,6 +606,16 @@ void SE0352NQ01::drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
   drawVLine(fx1, fy0, fy1, rotation, buffer);
 }
 
+/*
+  @brief Like fillRect, but in white
+  @param x0 start, x position
+  @param y0 start, y position
+  @param x1 end, x position
+  @param y1 end, y position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::clearRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   uint16_t fx0, fx1, fy0, fy1, x, y;
   if (x1 < x0) {
@@ -461,6 +635,16 @@ void SE0352NQ01::clearRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, u
   }
 }
 
+/*
+  @brief Fills a rectangle
+  @param x0 start, x position
+  @param y0 start, y position
+  @param x1 end, x position
+  @param y1 end, y position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer) {
   uint16_t fx0, fx1, fy0, fy1, x, y;
   if (x1 < x0) {
@@ -478,13 +662,28 @@ void SE0352NQ01::fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, ui
   }
 }
 
+/*
+  @brief Draws a polygon from x,y pairs
+  @param points array of x,y points
+  @param len length of the array
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::drawPolygon(uint16_t *points, uint16_t len, uint8_t rotation, uint8_t *buffer) {
   for (uint16_t x = 0; x < len - 1; x++) {
-    // Serial.printf("line from %d:%d to %d:%d\n", points[x*2], points[x*2+1], points[x*2+2], points[x*2+3]);
     drawLine(points[x * 2], points[x * 2 + 1], points[x * 2 + 2], points[x * 2 + 3], rotation, buffer);
   }
 }
 
+/*
+  @brief Clears (ie set to white) a pixel
+  @param x x-position
+  @param y y-position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::clearPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
   uint16_t x0, y0;
   if (rotation == 0) {
@@ -506,6 +705,14 @@ void SE0352NQ01::clearPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *b
   buffer[bytePos] = bf | (1 << (7 - n));
 }
 
+/*
+  @brief Sets (ie to black) a pixel
+  @param x x-position
+  @param y y-position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
   uint8_t anders[8] = {
     0b01111111, 0b10111111, 0b11011111, 0b11101111,
@@ -531,6 +738,15 @@ void SE0352NQ01::setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buf
   uint8_t af = bf & anders[n];
   buffer[bytePos] = af;
 }
+
+/*
+  @brief returns the colour of a pixel
+  @param x x-position
+  @param y y-position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return colour
+*/
 
 uint8_t SE0352NQ01::getPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer) {
   uint8_t anders[8] = {
@@ -559,14 +775,22 @@ uint8_t SE0352NQ01::getPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *
   else return PIC_WHITE;
 }
 
+/*
+  @brief flood fill
+  @param iXseed start x-position
+  @param iYseed start y-position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::fillContour(uint16_t iXseed, uint16_t iYseed, uint8_t rotation, uint8_t *buffer) {
   /*
-    https://www.rosettacode.org/wiki/Bitmap/Flood_fill#Simple_and_complete_example_in_C89
-    fills contour with black border using seed point inside contour and horizontal lines.
-    it starts from seed point, saves max right(iXmaxLocal) and max left (iXminLocal) interior points of horizontal line,
-    in new line (iY+1 or iY-1) it computes new interior point: iXmidLocal=iXminLocal + (iXmaxLocal-iXminLocal)/2;
-    result is stored in _data array : 1D array of 1-bit colors (shades of gray);
-    it does not check if index of _data array is good so memory error is possible
+      https://www.rosettacode.org/wiki/Bitmap/Flood_fill#Simple_and_complete_example_in_C89
+      fills contour with black border using seed point inside contour and horizontal lines.
+      it starts from seed point, saves max right(iXmaxLocal) and max left (iXminLocal) interior points of horizontal line,
+      in new line (iY+1 or iY-1) it computes new interior point: iXmidLocal=iXminLocal + (iXmaxLocal-iXminLocal)/2;
+      result is stored in _data array : 1D array of 1-bit colors (shades of gray);
+      it does not check if index of _data array is good so memory error is possible
   */
   // iYmax depends on rotation: landscape = 240, portrait = 360
   uint16_t iYmax = 240;
@@ -623,6 +847,20 @@ void SE0352NQ01::fillContour(uint16_t iXseed, uint16_t iYseed, uint8_t rotation,
   } while (0 < iY);
 }
 
+/*
+  @brief draws a partial image inside the buffer
+  @param width image width
+  @param height image height
+  @param posX top left corner x-position
+  @param posY top left corner y-position
+  @param xOffset Ignore, set to 0
+  @param yOffset Ignore, set to 0
+  @param bitmapOffset offset within the image buffer, usually set to 0
+  @param buffer the 10,800-byte buffer you are drawing to
+  @param bitmap the buffer to the image you are drawing
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @return nothing
+*/
 void SE0352NQ01::drawBitmap(
   uint8_t width, uint8_t height, uint16_t posX, uint16_t posY,
   int8_t xOffset, int8_t yOffset, uint16_t bitmapOffset,
@@ -664,17 +902,27 @@ void SE0352NQ01::drawBitmap(
   }
 }
 
+/*
+  @brief Draws a string
+  @param myStr String as character array
+  @param posX Start x position
+  @param posY Start y position
+  @param myFont GFX font to use
+  @param rotation Screen rotation to use
+  @param buffer Buffer to draw string to
+  @return uint16_t Length of string in pixel. Optional.
+*/
 uint16_t SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont myFont, uint8_t rotation, uint8_t* buffer) {
   uint8_t ln = strlen(myStr);
   uint16_t strLen = 0;
   uint16_t right, bottom;
-  if(rotation == 0||rotation == 2) {
+  if (rotation == 0 || rotation == 2) {
     right = 359;
     bottom = 239;
   } else {
     right = 239;
     bottom = 359;
-}
+  }
   for (uint8_t i = 0; i < ln; i++) {
     uint8_t c = myStr[i] - 32;
     GFXglyph glyph = myFont.glyph[c];
@@ -699,10 +947,16 @@ uint16_t SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfo
   return strLen;
 }
 
+/*
+  @brief Calculates a string's width in pixels
+  @param myStr String as character array
+  @param myFont GFX font to use
+  @return uint16_t Length of string in pixel.
+*/
 uint16_t SE0352NQ01::strWidth(char *myStr, GFXfont myFont) {
   uint8_t ln = strlen(myStr);
-    uint8_t c = myStr[i] - 32;
-    GFXglyph glyph = myFont.glyph[c];
+  uint8_t c = myStr[i] - 32;
+  GFXglyph glyph = myFont.glyph[c];
   uint16_t strLen = 0;
   for (uint8_t i = 0; i < ln; i++) {
     GFXglyph glyph = myFont.glyph[c];
@@ -711,17 +965,27 @@ uint16_t SE0352NQ01::strWidth(char *myStr, GFXfont myFont) {
   return strLen;
 }
 
+/*
+  @brief Draws a Unicode string. Mostly Chinese for now.
+  @param myStr String as character array
+  @param posX Start x position
+  @param posY Start y position
+  @param myFont font to use
+  @param myIndex sparse index buffer with the glyphs data
+  @param myIndexLen Length of the sparse index buffer data
+  @param charHeight Character height in pixel
+  @param rotation Screen rotation to use
+  @param buffer Buffer to draw string to
+  @return nothing
+*/
 void SE0352NQ01::drawUnicode(
   uint16_t *myStr, uint8_t len,
   uint16_t posX, uint16_t posY,
   uint8_t *myFont, uint8_t *myIndex,
   uint16_t myIndexLen, uint8_t charHeight,
   uint8_t rotation, uint8_t* buffer) {
-  // Serial.printf("sparseLen = %d; charHeight = %d\n", myIndexLen, charHeight);
   for (uint8_t zw = 0; zw < len; zw++) {
-    // get_ch2(uint16_t ch, const uint8_t* sparse, uint16_t sparseLen, uint8_t* myFont, uint8_t fHeight) {
     get_ch2(myStr[zw], myIndex, myIndexLen, myFont, charHeight);
-    // Serial.printf("doff = %d, next_offs = %d, myHeight = %d, myWidth = %d\n\n", doff, next_offs, myHeight, myWidth);
     uint8_t ln = (next_offs - doff);
     uint8_t w = ln * 8 / myHeight;
     drawBitmap(w, myHeight, posX, posY, 0, 0, doff, buffer, myFont, rotation);
@@ -752,15 +1016,12 @@ uint16_t SE0352NQ01::bs(const uint8_t *lst, uint16_t sparseLen, uint16_t val) {
   uint16_t low = 0;
   uint16_t high = (sparseLen / 4);
   uint8_t count = 0;
-  // Serial.printf("sparseLen = %d; low = %d; high = %d\n", sparseLen, low, high);
   while (count < 30) {
     uint16_t m = (high - low) / 2 + low;
     uint16_t pos = m * 4;
     uint16_t v = lst[pos] | (lst[pos + 1] << 8);
-    // Serial.printf("Looking for %04x; v = %04x; m = %d; pos = %d; low = %d; high = %d\n", val, v, m, pos, low, high);
     if (v == val) {
       v = lst[pos + 2] | (lst[pos + 3] << 8);
-      // Serial.printf(" > Found! Returning %d\n", v);
       return v;
     }
     if (low > high) {
@@ -769,10 +1030,8 @@ uint16_t SE0352NQ01::bs(const uint8_t *lst, uint16_t sparseLen, uint16_t val) {
     }
     if (v < val) {
       low = m + 1;
-      // Serial.printf(" %04x < %04x: setting low to %d, high stays at %d\n", v, val, low, high);
     } else {
       high = m - 1;
-      // Serial.printf(" %04x > %04x: setting high to %d, low stays at %d\n", v, val, high, low);
     }
     count += 1;
   }
@@ -789,13 +1048,22 @@ void SE0352NQ01::get_ch2(uint16_t ch, const uint8_t* sparse, uint16_t sparseLen,
     Serial.println("doff is null. Aborting...");
     return;
   }
-  // Serial.printf("doff: %d\n", doff);
   myWidth = myFont[doff] | (myFont[doff + 1] << 8);
   doff += 2;
   next_offs = doff + ((myWidth - 1) / 8 + 1) * fHeight;
   myHeight = fHeight;
 }
 
+/*
+  @brief Refreshes partially the EPD within the rectangle passed as coordinates.
+  @param xStart start x-position
+  @param yStart start y-position
+  @param xEnd end x-position
+  @param yEnd end y-position
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @param buffer the 10,800-byte buffer you are drawing to
+  @return nothing
+*/
 void SE0352NQ01::partialRefresh(
   uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd,
   uint8_t rotation, uint8_t* buffer
@@ -811,10 +1079,8 @@ void SE0352NQ01::partialRefresh(
     ys = ye;
     ye = temp;
   }
-  // Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
   xs &= 0b111111000;
   xe = (xe & 0b111111000) | 0b111;
-  // Serial.printf("Preliminary coordinates: %d:%d %d:%d\n", xs, ys, xe, ye);
   if (rotation == 0) {
     x0 = ys & 0xFF;
     y0 = 359 - xs;
@@ -836,7 +1102,6 @@ void SE0352NQ01::partialRefresh(
     x1 = 239 - xe;
     y1 = 359 - ye;
   }
-  // Serial.printf("Final coordinates: %d:%d %d:%d\n", x0, y0, x1, y1);
   // HRST[7:3] HRED[7:3]
   // Horizontal 8-pixel channel bank. (value 00h~1Dh)
   // 30 possibilities * 8 (last three bits @ 0 = X << 3)
@@ -864,10 +1129,8 @@ void SE0352NQ01::partialRefresh(
       // cols / 8 bits
       uint16_t btPos = y * 30 + (x / 8);
       SE0352.EPD_W21_WriteDATA(buffer[btPos]);
-      // Serial.printf("%02x %d ", buffer[btPos], btPos);
       counter += 1;
     }
-    // Serial.write('\n');
   }
   SE0352.lut_GC();
   SE0352.refresh();
