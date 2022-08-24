@@ -1086,6 +1086,7 @@ void SE0352NQ01::partialRefresh(
   uint8_t rotation, uint8_t* buffer
 ) {
   uint16_t x0, x1, xs = xStart, xe = xEnd, temp, y0, ys = yStart, y1, ye = yEnd;
+  // Enforce top/left bottom/right
   if (xs > xe) {
     temp = xs;
     xs = xe;
@@ -1096,27 +1097,73 @@ void SE0352NQ01::partialRefresh(
     ys = ye;
     ye = temp;
   }
-  xs &= 0b111111000;
-  xe = (xe & 0b111111000) | 0b111;
+//   xs &= 0b111111000;
+//   xe = (xe & 0b111111000) | 0b111;
+//   if (rotation == 0) {
+//     x0 = ys & 0xFF;
+//     y0 = 359 - xs;
+//     x1 = ye & 0xFF;
+//     y1 = 359 - xe;
+//   } else if (rotation == 2) {
+//     x0 = (239 - ys) & 0xFF;
+//     y0 = x0;
+//     x1 = (239 - ye) & 0xFF;
+//     y1 = xe;
+//   } else if (rotation == 1) {
+//     x0 = xs;
+//     y0 = ys;
+//     x1 = xe;
+//     y1 = ye;
+//   } else if (rotation == 3) {
+//     x0 = 239 - xs;
+//     y0 = 359 - ys;
+//     x1 = 239 - xe;
+//     y1 = 359 - ye;
+//   }
+/*
+  Rotating the coordinates to match the buffer, which in in Portrait 1 mode,
+  Then enforcing the X axis constraints – X axis of the buffer, not your orientation of choice.
+  HRST[7:3] HRED[7:3]
+  Horizontal 8-pixel channel bank. (value 00h~1Dh)
+  30 possibilities * 8 (last three bits @ 0 = X << 3)
+  for HRED, the last 3 bits are set to 1 to match the last bit of the last byte.
+
+  For instance if in rotation mode 0 you want to partial refresh from 10,20 to 109,119,
+  you are really refreshing from 20,10.
+  But 20 isn't a multiple of 8. So the coordinates that get passed after rotating x and y are 16,349 to 119,250:
+
+    20 & 0b11111000 ==> 16
+    10 ==> 359 - 10 ==> 349 (top becomes bottom)
+    119 & 0b11111000 = 112 | 0b00000111 ==> 119
+    109 ==> 359 - 109 ==> 250 (top becomes bottom)
+*/
+
   if (rotation == 0) {
+    // X and Y axis are switched
+    // The Y axis is also inverted – as we are rotating 90° CW
     x0 = ys & 0xFF;
-    y0 = 359 - xs;
     x1 = ye & 0xFF;
-    y1 = 359 - xe;
+    y0 = (359 - xs) & 0b111111000;
+    y1 = ((359 - xe) & 0b111111000) & 0b111111000;
   } else if (rotation == 2) {
+    // X and Y axis are switched
+    // The X axis is also inverted – as we are rotating 90° CCW
     x0 = (239 - ys) & 0xFF;
-    y0 = x0;
     x1 = (239 - ye) & 0xFF;
-    y1 = xe;
+    y0 = xs & 0b111111000;
+    y1 = (xe & 0b111111000) | 0b111;
   } else if (rotation == 1) {
-    x0 = xs;
+    // Nothing to do except enforce HRST HRED constraints
+    x0 = xs & 0b111111000;
+    x1 = (xe & 0b111111000) | 0b111;
     y0 = ys;
-    x1 = xe;
     y1 = ye;
   } else if (rotation == 3) {
-    x0 = 239 - xs;
+    // Enforce HRST HRED constraints after inverting the X and Y axis,
+    // as we are rotating 180°
+    x0 = (239 - xs) & 0b111111000;
+    x1 = ((239 - xe) & 0b111111000) & 0b111111000
     y0 = 359 - ys;
-    x1 = 239 - xe;
     y1 = 359 - ye;
   }
   // HRST[7:3] HRED[7:3]
