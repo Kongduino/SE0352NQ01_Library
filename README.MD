@@ -31,7 +31,8 @@ I cleaned up `cjk16b.py` a little, and added code that produces the `CJK16pt.h` 
       unsigned char*, uint16_t, uint8_t, uint8_t, unsigned char*
     );
     void drawBitmap(
-      uint8_t, uint8_t, uint16_t, uint16_t, int8_t, int8_t,
+      uint8_t, uint8_t, uint16_t,
+      uint16_t, int8_t, int8_t, // these three only for fonts, not necessary for bitmap images
       uint16_t, unsigned char *, unsigned char *, uint8_t
     );
 ```

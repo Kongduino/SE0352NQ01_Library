@@ -58,6 +58,7 @@ class SE0352NQ01 {
     uint16_t strWidth(char *, GFXfont);
     void drawUnicode(uint16_t*, uint8_t, uint16_t, uint16_t, uint8_t*, uint8_t*, uint16_t, uint8_t, uint8_t, uint8_t*);
     void drawBitmap(uint8_t, uint8_t, uint16_t, uint16_t, int8_t, int8_t, uint16_t, uint8_t *, uint8_t *, uint8_t);
+    void drawBitmap(uint8_t, uint8_t, uint16_t, uint16_t, uint8_t *, uint8_t *, uint8_t);
     void setPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
     void clearPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
     uint8_t getPixel(uint16_t, uint16_t, uint8_t, uint8_t *);

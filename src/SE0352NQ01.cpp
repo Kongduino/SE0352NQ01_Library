@@ -853,9 +853,27 @@ void SE0352NQ01::fillContour(uint16_t iXseed, uint16_t iYseed, uint8_t rotation,
   @param height image height
   @param posX top left corner x-position
   @param posY top left corner y-position
-  @param xOffset Ignore, set to 0
-  @param yOffset Ignore, set to 0
-  @param bitmapOffset offset within the image buffer, usually set to 0
+  @param buffer the 10,800-byte buffer you are drawing to
+  @param bitmap the buffer to the image you are drawing
+  @param rotation 0 / 2 landscape, 1 / 3 portrait
+  @return nothing
+*/
+void SE0352NQ01::drawBitmap(
+  uint8_t width, uint8_t height, uint16_t posX, uint16_t posY,
+  uint8_t *buffer, uint8_t *bitmap, uint8_t rotation
+) {
+  drawBitmap(width, height, posX, posY, 0, 0, 0, buffer, bitmap, rotation);
+}
+
+/*
+  @brief draws a partial image inside the buffer
+  @param width image width
+  @param height image height
+  @param posX top left corner x-position
+  @param posY top left corner y-position
+  @param xOffset For fonts. 0 for images.
+  @param yOffset For fonts. 0 for images.
+  @param bitmapOffset For fonts. 0 for images.
   @param buffer the 10,800-byte buffer you are drawing to
   @param bitmap the buffer to the image you are drawing
   @param rotation 0 / 2 landscape, 1 / 3 portrait
@@ -955,10 +973,9 @@ uint16_t SE0352NQ01::drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfo
 */
 uint16_t SE0352NQ01::strWidth(char *myStr, GFXfont myFont) {
   uint8_t ln = strlen(myStr);
-  uint8_t c = myStr[i] - 32;
-  GFXglyph glyph = myFont.glyph[c];
   uint16_t strLen = 0;
   for (uint8_t i = 0; i < ln; i++) {
+    uint8_t c = myStr[i] - 32;
     GFXglyph glyph = myFont.glyph[c];
     strLen += glyph.xAdvance;
   }
