@@ -8,11 +8,6 @@
 
 SE0352NQ01	KEYWORD1
 SE0352	KEYWORD1
-
-#######################################
-# Datatypes (KEYWORD1)
-#######################################
-
 GFXfont 	KEYWORD1
 GFXglyph 	KEYWORD1
 GFXfont 	KEYWORD1
@@ -21,27 +16,50 @@ GFXfont 	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+bs	KEYWORD2
 clearPixel	KEYWORD2
-setPixel	KEYWORD2
 clearRect	KEYWORD2
+DELAY_M	KEYWORD2
+DELAY_S	KEYWORD2
 drawBitmap	KEYWORD2
-drawRect	KEYWORD2
-fillRect	KEYWORD2
 drawCircle	KEYWORD2
-fillCircle	KEYWORD2
-fillContour	KEYWORD2
-fillScreen	KEYWORD2
-drawLine	KEYWORD2
+drawCirclePoints	KEYWORD2
+drawFillCircle	KEYWORD2
 drawHLine	KEYWORD2
-drawVLine	KEYWORD2
+drawLine	KEYWORD2
 drawPolygon	KEYWORD2
+drawRect	KEYWORD2
 drawString	KEYWORD2
 drawUnicode	KEYWORD2
+drawVLine	KEYWORD2
+driver_delay_us	KEYWORD2
+driver_delay_xms	KEYWORD2
+EPD_init	KEYWORD2
+EPD_Reset	KEYWORD2
+EPD_W21_WriteCMD	KEYWORD2
+EPD_W21_WriteDATA	KEYWORD2
+fillCircle	KEYWORD2
+fillCirclePoints	KEYWORD2
+fillContour	KEYWORD2
+fillRect	KEYWORD2
+fillScreen	KEYWORD2
+get_ch2	KEYWORD2
+getPixel	KEYWORD2
+KEY_Scan	KEYWORD2
+lcd_chkstatus	KEYWORD2
+lut_5S	KEYWORD2
+lut_DU	KEYWORD2
+lut_GC	KEYWORD2
 partialRefresh	KEYWORD2
+PIC_display	KEYWORD2
+PIC_display1	KEYWORD2
 refresh	KEYWORD2
 send	KEYWORD2
 send_DU	KEYWORD2
+setPixel	KEYWORD2
 sleep	KEYWORD2
+SPI_Write	KEYWORD2
+strWidth	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
