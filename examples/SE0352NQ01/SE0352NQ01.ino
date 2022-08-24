@@ -77,13 +77,13 @@ void graphicDemo() {
   memset(frame, PIC_WHITE, 10800);
   uint16_t px = 2, py = 2;
   Serial.print(" . Thermometer");
-  SE0352.drawBitmap(gThermometer_width, gThermometer_height, px, py, 0, 0, 0, frame, gThermometer, 0);
+  SE0352.drawBitmap(gThermometer_width, gThermometer_height, px, py, frame, gThermometer, 0);
   // In FreeSansBold12pt7b, ` has been replaced with an o, with a bigger yOffset, to make a ° sign cheaply :-)
   Serial.println(" 27*");
   SE0352.drawString((char*)"27`", px + gThermometer_width + 5, (py + gThermometer_height) / 2 + 12, FreeSansBold12pt7b, 0, frame);
   py += gThermometer_height + 10;
   Serial.print(" . Humidity");
-  SE0352.drawBitmap(gHumidity_width, gHumidity_height, px, py, 0, 0, 0, frame, gHumidity, 0);
+  SE0352.drawBitmap(gHumidity_width, gHumidity_height, px, py, frame, gHumidity, 0);
   Serial.println(" 58%");
   SE0352.drawString((char*)"58%", px + gHumidity_width + 5, (py + gHumidity_height) / 1.2, FreeSansBold12pt7b, 0, frame);
 
