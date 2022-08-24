@@ -1006,8 +1006,8 @@ void SE0352NQ01::drawUnicode(
     uint8_t ln = (next_offs - doff);
     uint8_t w = ln * 8 / myHeight;
     drawBitmap(w, myHeight, posX, posY, 0, 0, doff, buffer, myFont, rotation);
-#ifdef SHOW_OFF_SE0352
     posX += w;
+#ifdef SHOW_OFF_SE0352
     uint8_t lCount = 0;
     for (uint16_t i = doff; i < next_offs; i++) {
       uint8_t c = myFont[i], mask = 0b10000000;
