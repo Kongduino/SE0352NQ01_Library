@@ -73,6 +73,8 @@ class SE0352NQ01 {
     void drawPolygon(uint16_t *, uint16_t, uint8_t, uint8_t *);
     void fillContour(uint16_t, uint16_t, uint8_t, uint8_t *);
     void partialRefresh(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t*);
+    uint16_t width(uint8_t);
+    uint16_t height(uint8_t);
 
   private:
     void EPD_Reset(void);

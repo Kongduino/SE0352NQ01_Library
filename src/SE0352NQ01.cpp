@@ -27,6 +27,26 @@ SE0352NQ01::~SE0352NQ01() {
 }
 
 /*
+  @brief Returns the width, adjusted to orientation.
+  @param orientation
+  @return width
+*/
+uint16_t SE0352NQ01::width(uint8_t orientation) {
+  if(orientation == 0 || orientation == 2) return 360;
+  return 240;
+}
+
+/*
+  @brief Returns the height, adjusted to orientation.
+  @param orientation
+  @return nothing
+*/
+uint16_t SE0352NQ01::height(uint8_t orientation) {
+  if(orientation == 0 || orientation == 2) return 240;
+  return 360;
+}
+
+/*
   @brief Delay. Manufacturer-supplied method.
   @param xus  number of microseconds
   @return nothing
@@ -1085,41 +1105,8 @@ void SE0352NQ01::partialRefresh(
   uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd,
   uint8_t rotation, uint8_t* buffer
 ) {
-  uint16_t x0, x1, xs = xStart, xe = xEnd, temp, y0, ys = yStart, y1, ye = yEnd;
-  // Enforce top/left bottom/right
-  if (xs > xe) {
-    temp = xs;
-    xs = xe;
-    xe = temp;
-  }
-  if (ys > ye) {
-    temp = ys;
-    ys = ye;
-    ye = temp;
-  }
-//   xs &= 0b111111000;
-//   xe = (xe & 0b111111000) | 0b111;
-//   if (rotation == 0) {
-//     x0 = ys & 0xFF;
-//     y0 = 359 - xs;
-//     x1 = ye & 0xFF;
-//     y1 = 359 - xe;
-//   } else if (rotation == 2) {
-//     x0 = (239 - ys) & 0xFF;
-//     y0 = x0;
-//     x1 = (239 - ye) & 0xFF;
-//     y1 = xe;
-//   } else if (rotation == 1) {
-//     x0 = xs;
-//     y0 = ys;
-//     x1 = xe;
-//     y1 = ye;
-//   } else if (rotation == 3) {
-//     x0 = 239 - xs;
-//     y0 = 359 - ys;
-//     x1 = 239 - xe;
-//     y1 = 359 - ye;
-//   }
+  // Serial.printf("Original coordinates: %d:%d to %d:%d\n", xStart, yStart, xEnd, yEnd);
+  uint16_t x0, x1, temp, y0, y1;
 /*
   Rotating the coordinates to match the buffer, which is in Portrait 1 mode,
   Then enforcing the X axis constraints – X axis of the buffer, not your orientation of choice.
@@ -1141,36 +1128,37 @@ void SE0352NQ01::partialRefresh(
   if (rotation == 0) {
     // X and Y axis are switched
     // The Y axis is also inverted – as we are rotating 90° CW
-    x0 = ys & 0xFF;
-    x1 = ye & 0xFF;
-    y0 = (359 - xs) & 0b111111000;
-    y1 = ((359 - xe) & 0b111111000) & 0b111111000;
+    x0 = yStart & 0b111111000;
+    x1 = (yEnd & 0b111111000) | 7;
+    y0 = (359 - xEnd);
+    y1 = (359 - xStart);
   } else if (rotation == 2) {
     // X and Y axis are switched
     // The X axis is also inverted – as we are rotating 90° CCW
-    x0 = (239 - ys) & 0xFF;
-    x1 = (239 - ye) & 0xFF;
-    y0 = xs & 0b111111000;
-    y1 = (xe & 0b111111000) | 0b111;
+    x0 = (239 - yEnd) & 0b111111000;
+    x1 = ((239 - yStart) & 0b111111000) | 7;
+    y0 = xStart;
+    y1 = xEnd;
   } else if (rotation == 1) {
     // Nothing to do except enforce HRST HRED constraints
-    x0 = xs & 0b111111000;
-    x1 = (xe & 0b111111000) | 0b111;
-    y0 = ys;
-    y1 = ye;
+    x0 = xStart & 0b111111000;
+    x1 = (xEnd & 0b111111000) | 0b111;
+    y0 = yStart;
+    y1 = yEnd;
   } else if (rotation == 3) {
     // Enforce HRST HRED constraints after inverting the X and Y axis,
     // as we are rotating 180°
-    x0 = (239 - xs) & 0b111111000;
-    x1 = ((239 - xe) & 0b111111000) & 0b111111000;
-    y0 = 359 - ys;
-    y1 = 359 - ye;
+    x0 = (239 - xEnd) & 0b111111000;
+    x1 = ((239 - xStart) & 0b111111000) | 0b111;
+    y1 = 359 - yStart;
+    y0 = 359 - yEnd;
   }
+  // Serial.printf("Coordinates: %d:%d to %d:%d\n\n", x0, y0, x1, y1);
   uint8_t py00, py01, py10, py11;
-  py00 = y1 >> 8;
-  py01 = y1 & 0xFF;
-  py10 = y0 >> 8;
-  py11 = y0 & 0xFF;
+  py00 = y0 >> 8;
+  py01 = y0 & 0xFF;
+  py10 = y1 >> 8;
+  py11 = y1 & 0xFF;
   SE0352.EPD_W21_WriteCMD(0x91); // Enter partial refresh mode
   SE0352.EPD_W21_WriteCMD(0x90); // Partial refresh data
   SE0352.EPD_W21_WriteDATA((uint8_t)x0); // HRST
@@ -1181,7 +1169,7 @@ void SE0352NQ01::partialRefresh(
   SE0352.EPD_W21_WriteDATA(py11); // VRED
   SE0352.EPD_W21_WriteDATA(0x01);
   SE0352.EPD_W21_WriteCMD(0x13);
-  for (uint16_t y = y1; y <= y0; y++) {
+  for (uint16_t y = y0; y <= y1; y++) {
     // rows
     for (uint16_t x = x0; x <= x1; x += 8) {
       // cols / 8 bits
