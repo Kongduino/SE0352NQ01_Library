@@ -33,7 +33,7 @@ SE0352NQ01::~SE0352NQ01() {
 */
 uint16_t SE0352NQ01::width(uint8_t orientation) {
   if(orientation == 0 || orientation == 2) return 360;
-  return 240;
+  else return 240;
 }
 
 /*
@@ -43,7 +43,7 @@ uint16_t SE0352NQ01::width(uint8_t orientation) {
 */
 uint16_t SE0352NQ01::height(uint8_t orientation) {
   if(orientation == 0 || orientation == 2) return 240;
-  return 360;
+  else return 360;
 }
 
 /*
@@ -299,6 +299,16 @@ void SE0352NQ01::lut_DU(void) {
 void SE0352NQ01::send(uint8_t* picData) {
   PIC_display1(picData);
   lut_GC();
+}
+
+/*
+  @brief Sends a full buffer to the EPD, then does a faster refresh.
+  @param picData, 10,800 bytes
+  @return nothing
+*/
+void SE0352NQ01::send_5S(uint8_t* picData) {
+  PIC_display1(picData);
+  lut_5S();
 }
 
 /*

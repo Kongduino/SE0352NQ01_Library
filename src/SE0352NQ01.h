@@ -50,31 +50,47 @@ class SE0352NQ01 {
     ~SE0352NQ01();
     void sleep(void);
     void refresh(void);
-    void send(uint8_t*);
-    void send_DU(uint8_t*);
-    void fillScreen(uint8_t);
-    //void drawString(char *, uint16_t, uint16_t, GFXfont, uint8_t, uint8_t*);
-    uint16_t drawString(char *, uint16_t, uint16_t, GFXfont, uint8_t, uint8_t*);
-    uint16_t strWidth(char *, GFXfont);
-    void drawUnicode(uint16_t*, uint8_t, uint16_t, uint16_t, uint8_t*, uint8_t*, uint16_t, uint8_t, uint8_t, uint8_t*);
-    void drawBitmap(uint8_t, uint8_t, uint16_t, uint16_t, int8_t, int8_t, uint16_t, uint8_t *, uint8_t *, uint8_t);
-    void drawBitmap(uint8_t, uint8_t, uint16_t, uint16_t, uint8_t *, uint8_t *, uint8_t);
-    void setPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
-    void clearPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
-    uint8_t getPixel(uint16_t, uint16_t, uint8_t, uint8_t *);
-    void drawRect(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void fillRect(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void clearRect(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void drawCircle(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void fillCircle(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void drawLine(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void drawHLine(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void drawVLine(uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
-    void drawPolygon(uint16_t *, uint16_t, uint8_t, uint8_t *);
-    void fillContour(uint16_t, uint16_t, uint8_t, uint8_t *);
-    void partialRefresh(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t*);
-    uint16_t width(uint8_t);
-    uint16_t height(uint8_t);
+    void send(uint8_t* picData);
+    void send_DU(uint8_t* picData);
+    void send_5S(uint8_t* picData);
+    void fillScreen(uint8_t NUM);
+    uint16_t drawString(char *myStr, uint16_t posX, uint16_t posY, GFXfont myFont, uint8_t rotation, uint8_t* buffer);
+    uint16_t strWidth(char *myStr, GFXfont myFont);
+    void drawUnicode(
+      uint16_t *myStr, uint8_t len,
+      uint16_t posX, uint16_t posY,
+      uint8_t *myFont, uint8_t *myIndex,
+      uint16_t myIndexLen, uint8_t charHeight,
+      uint8_t rotation, uint8_t* buffer
+    );
+    void drawBitmap(
+      uint8_t width, uint8_t height, uint16_t posX, uint16_t posY,
+      int8_t xOffset, int8_t yOffset, uint16_t bitmapOffset,
+      uint8_t *buffer, uint8_t *bitmap, uint8_t rotation
+    );
+    void drawBitmap(
+      uint8_t width, uint8_t height, uint16_t posX, uint16_t posY,
+      uint8_t *buffer, uint8_t *bitmap, uint8_t rotation
+    );
+    void setPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer);
+    void clearPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer);
+    uint8_t getPixel(uint16_t x, uint16_t y, uint8_t rotation, uint8_t *buffer);
+    void drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);
+    void fillRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);
+    void clearRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);
+    void drawCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer);
+    void fillCircle(uint16_t xc, uint16_t yc, uint16_t r, uint8_t rotation, uint8_t *buffer);
+    void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t rotation, uint8_t *buffer);
+    void drawHLine(uint16_t x0, uint16_t y0, uint16_t x1, uint8_t rotation, uint8_t *buffer);
+    void drawVLine(uint16_t x0, uint16_t y0, uint16_t y1, uint8_t rotation, uint8_t *buffer);
+    void drawPolygon(uint16_t *points, uint16_t len, uint8_t rotation, uint8_t *buffer);
+    void fillContour(uint16_t iXseed, uint16_t iYseed, uint8_t rotation, uint8_t *buffer);
+    void partialRefresh(
+      uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd,
+      uint8_t rotation, uint8_t* buffer
+    );
+    uint16_t width(uint8_t orientation);
+    uint16_t height(uint8_t orientation);
 
   private:
     void EPD_Reset(void);
