@@ -1121,7 +1121,7 @@ void SE0352NQ01::partialRefresh(
 //     y1 = 359 - ye;
 //   }
 /*
-  Rotating the coordinates to match the buffer, which in in Portrait 1 mode,
+  Rotating the coordinates to match the buffer, which is in Portrait 1 mode,
   Then enforcing the X axis constraints – X axis of the buffer, not your orientation of choice.
   HRST[7:3] HRED[7:3]
   Horizontal 8-pixel channel bank. (value 00h~1Dh)
@@ -1166,19 +1166,13 @@ void SE0352NQ01::partialRefresh(
     y0 = 359 - ys;
     y1 = 359 - ye;
   }
-  // HRST[7:3] HRED[7:3]
-  // Horizontal 8-pixel channel bank. (value 00h~1Dh)
-  // 30 possibilities * 8 (last three bits @ 0 = X << 3)
-  // for HRED, last 3 bits set to 1.
-  // so eg 0x1D = 29 * 8 = 232 ~ 239, ie rows 232 to 239
-  // Send command
-  uint8_t counter = 0, py00, py01, py10, py11;
+  uint8_t py00, py01, py10, py11;
   py00 = y1 >> 8;
   py01 = y1 & 0xFF;
   py10 = y0 >> 8;
   py11 = y0 & 0xFF;
-  SE0352.EPD_W21_WriteCMD(0x91);
-  SE0352.EPD_W21_WriteCMD(0x90);
+  SE0352.EPD_W21_WriteCMD(0x91); // Enter partial refresh mode
+  SE0352.EPD_W21_WriteCMD(0x90); // Partial refresh data
   SE0352.EPD_W21_WriteDATA((uint8_t)x0); // HRST
   SE0352.EPD_W21_WriteDATA((uint8_t)x1); // HRED
   SE0352.EPD_W21_WriteDATA(py00);
@@ -1193,12 +1187,11 @@ void SE0352NQ01::partialRefresh(
       // cols / 8 bits
       uint16_t btPos = y * 30 + (x / 8);
       SE0352.EPD_W21_WriteDATA(buffer[btPos]);
-      counter += 1;
     }
   }
   SE0352.lut_GC();
   SE0352.refresh();
-  SE0352.EPD_W21_WriteCMD(0x92);
+  SE0352.EPD_W21_WriteCMD(0x92); // Exit partial refresh mode
 }
 
 SE0352NQ01 SE0352;
