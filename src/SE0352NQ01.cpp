@@ -1162,7 +1162,7 @@ void SE0352NQ01::partialRefresh(
     // Enforce HRST HRED constraints after inverting the X and Y axis,
     // as we are rotating 180°
     x0 = (239 - xs) & 0b111111000;
-    x1 = ((239 - xe) & 0b111111000) & 0b111111000
+    x1 = ((239 - xe) & 0b111111000) & 0b111111000;
     y0 = 359 - ys;
     y1 = 359 - ye;
   }
