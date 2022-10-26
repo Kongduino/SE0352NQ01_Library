@@ -56,11 +56,12 @@ PIC_display1	KEYWORD2
 refresh	KEYWORD2
 send	KEYWORD2
 send_DU	KEYWORD2
+send_5S	KEYWORD2
 setPixel	KEYWORD2
 sleep	KEYWORD2
 SPI_Write	KEYWORD2
 strWidth	KEYWORD2
-
+makeCode128	KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
