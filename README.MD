@@ -43,7 +43,7 @@ I cleaned up `cjk16b.py` a little, and added code that produces the `CJK16pt.h` 
     uint16_t height(uint8_t); // returns height given the orientation
 ```
 
-The most important commands are, `drawString`, `drawUnicode`, and `drawBitmap`. The first is for ASCII text, the second for Chinese (or other UTF16 codepoints for which you have produced a font), and the third one is for partial images: it is the same code for both images and individual characters, which are both horizontally-encoded bitmaps. I wrote separately a desktop application that creates full-size images, in the RAM buffer format the EPD expects, from pictures you pass it, and partial images encoded as horizontally-encoded bitmaps. These images are resizable with the `Zoom` slider, and the black-and-white threshold adjustable with the `B/W Threshold` slider.
+The most important commands are `drawString`, `drawUnicode`, and `drawBitmap`. The first is for ASCII text, the second for Chinese (or other UTF16 codepoints for which you have produced a font), and the third one is for partial images: it is the same code for both images and individual characters, which are both horizontally-encoded bitmaps. I wrote separately a desktop application that creates full-size images, in the RAM buffer format the EPD expects, from pictures you pass it, and partial images encoded as horizontally-encoded bitmaps. These images are resizable with the `Zoom` slider, and the black-and-white threshold adjustable with the `B/W Threshold` slider.
 
 The `drawString` function returns the string's width in pixels, which you can ignore. That is, you can do:
 
