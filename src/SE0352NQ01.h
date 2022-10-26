@@ -1,5 +1,8 @@
+#ifndef __SE0352NQ01__
 #include <Arduino.h>
+#include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct {
   uint16_t bitmapOffset;
@@ -91,6 +94,7 @@ class SE0352NQ01 {
     );
     uint16_t width(uint8_t orientation);
     uint16_t height(uint8_t orientation);
+    void makeCode128(char *barcode, uint8_t wx, uint8_t bh, uint16_t px, uint16_t py, uint8_t rotation, uint8_t *buffer);
 
   private:
     void EPD_Reset(void);
@@ -111,6 +115,14 @@ class SE0352NQ01 {
     void fillCirclePoints(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *);
     void EPD_W21_WriteCMD(uint8_t);
     void EPD_W21_WriteDATA(uint8_t);
+    
+    // Code128
+    char code128Detect(char *code);
+    uint8_t code128FromType(uint8_t charCode, char barcodeType);
+    uint16_t code128DrawBars(
+      uint8_t nr, uint8_t wx, uint8_t bh, uint16_t px, uint16_t py,
+      uint8_t ix, uint16_t *check, uint8_t rotation, uint8_t *buffer
+    );
 
     // LUT
     void lut_DU(void);
@@ -220,3 +232,5 @@ const uint8_t lut_bb[] = {
 };
 
 extern SE0352NQ01 SE0352;
+#define __SE0352NQ01__
+#endif

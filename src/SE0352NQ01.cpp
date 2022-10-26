@@ -1,5 +1,122 @@
 #include "SE0352NQ01.h"
 
+struct code128Patterns {
+  uint8_t length;
+  uint8_t bits[7];
+};
+
+struct code128Patterns Patterns[] = {
+  {6, {2, 1, 2, 2, 2, 2}},
+  {6, {2, 2, 2, 1, 2, 2}},
+  {6, {2, 2, 2, 2, 2, 1}},
+  {6, {1, 2, 1, 2, 2, 3}},
+  {6, {1, 2, 1, 3, 2, 2}},
+  {6, {1, 3, 1, 2, 2, 2}},
+  {6, {1, 2, 2, 2, 1, 3}},
+  {6, {1, 2, 2, 3, 1, 2}},
+  {6, {1, 3, 2, 2, 1, 2}},
+  {6, {2, 2, 1, 2, 1, 3}},
+  {6, {2, 2, 1, 3, 1, 2}},
+  {6, {2, 3, 1, 2, 1, 2}},
+  {6, {1, 1, 2, 2, 3, 2}},
+  {6, {1, 2, 2, 1, 3, 2}},
+  {6, {1, 2, 2, 2, 3, 1}},
+  {6, {1, 1, 3, 2, 2, 2}},
+  {6, {1, 2, 3, 1, 2, 2}},
+  {6, {1, 2, 3, 2, 2, 1}},
+  {6, {2, 2, 3, 2, 1, 1}},
+  {6, {2, 2, 1, 1, 3, 2}},
+  {6, {2, 2, 1, 2, 3, 1}},
+  {6, {2, 1, 3, 2, 1, 2}},
+  {6, {2, 2, 3, 1, 1, 2}},
+  {6, {3, 1, 2, 1, 3, 1}},
+  {6, {3, 1, 1, 2, 2, 2}},
+  {6, {3, 2, 1, 1, 2, 2}},
+  {6, {3, 2, 1, 2, 2, 1}},
+  {6, {3, 1, 2, 2, 1, 2}},
+  {6, {3, 2, 2, 1, 1, 2}},
+  {6, {3, 2, 2, 2, 1, 1}},
+  {6, {2, 1, 2, 1, 2, 3}},
+  {6, {2, 1, 2, 3, 2, 1}},
+  {6, {2, 3, 2, 1, 2, 1}},
+  {6, {1, 1, 1, 3, 2, 3}},
+  {6, {1, 3, 1, 1, 2, 3}},
+  {6, {1, 3, 1, 3, 2, 1}},
+  {6, {1, 1, 2, 3, 1, 3}},
+  {6, {1, 3, 2, 1, 1, 3}},
+  {6, {1, 3, 2, 3, 1, 1}},
+  {6, {2, 1, 1, 3, 1, 3}},
+  {6, {2, 3, 1, 1, 1, 3}},
+  {6, {2, 3, 1, 3, 1, 1}},
+  {6, {1, 1, 2, 1, 3, 3}},
+  {6, {1, 1, 2, 3, 3, 1}},
+  {6, {1, 3, 2, 1, 3, 1}},
+  {6, {1, 1, 3, 1, 2, 3}},
+  {6, {1, 1, 3, 3, 2, 1}},
+  {6, {1, 3, 3, 1, 2, 1}},
+  {6, {3, 1, 3, 1, 2, 1}},
+  {6, {2, 1, 1, 3, 3, 1}},
+  {6, {2, 3, 1, 1, 3, 1}},
+  {6, {2, 1, 3, 1, 1, 3}},
+  {6, {2, 1, 3, 3, 1, 1}},
+  {6, {2, 1, 3, 1, 3, 1}},
+  {6, {3, 1, 1, 1, 2, 3}},
+  {6, {3, 1, 1, 3, 2, 1}},
+  {6, {3, 3, 1, 1, 2, 1}},
+  {6, {3, 1, 2, 1, 1, 3}},
+  {6, {3, 1, 2, 3, 1, 1}},
+  {6, {3, 3, 2, 1, 1, 1}},
+  {6, {3, 1, 4, 1, 1, 1}},
+  {6, {2, 2, 1, 4, 1, 1}},
+  {6, {4, 3, 1, 1, 1, 1}},
+  {6, {1, 1, 1, 2, 2, 4}},
+  {6, {1, 1, 1, 4, 2, 2}},
+  {6, {1, 2, 1, 1, 2, 4}},
+  {6, {1, 2, 1, 4, 2, 1}},
+  {6, {1, 4, 1, 1, 2, 2}},
+  {6, {1, 4, 1, 2, 2, 1}},
+  {6, {1, 1, 2, 2, 1, 4}},
+  {6, {1, 1, 2, 4, 1, 2}},
+  {6, {1, 2, 2, 1, 1, 4}},
+  {6, {1, 2, 2, 4, 1, 1}},
+  {6, {1, 4, 2, 1, 1, 2}},
+  {6, {1, 4, 2, 2, 1, 1}},
+  {6, {2, 4, 1, 2, 1, 1}},
+  {6, {2, 2, 1, 1, 1, 4}},
+  {6, {4, 1, 3, 1, 1, 1}},
+  {6, {2, 4, 1, 1, 1, 2}},
+  {6, {1, 3, 4, 1, 1, 1}},
+  {6, {1, 1, 1, 2, 4, 2}},
+  {6, {1, 2, 1, 1, 4, 2}},
+  {6, {1, 2, 1, 2, 4, 1}},
+  {6, {1, 1, 4, 2, 1, 2}},
+  {6, {1, 2, 4, 1, 1, 2}},
+  {6, {1, 2, 4, 2, 1, 1}},
+  {6, {4, 1, 1, 2, 1, 2}},
+  {6, {4, 2, 1, 1, 1, 2}},
+  {6, {4, 2, 1, 2, 1, 1}},
+  {6, {2, 1, 2, 1, 4, 1}},
+  {6, {2, 1, 4, 1, 2, 1}},
+  {6, {4, 1, 2, 1, 2, 1}},
+  {6, {1, 1, 1, 1, 4, 3}},
+  {6, {1, 1, 1, 3, 4, 1}},
+  {6, {1, 3, 1, 1, 4, 1}},
+  {6, {1, 1, 4, 1, 1, 3}},
+  {6, {1, 1, 4, 3, 1, 1}},
+  {6, {4, 1, 1, 1, 1, 3}},
+  {6, {4, 1, 1, 3, 1, 1}},
+  {6, {1, 1, 3, 1, 4, 1}},
+  {6, {1, 1, 4, 1, 3, 1}},
+  {6, {3, 1, 1, 1, 4, 1}},
+  {6, {4, 1, 1, 1, 3, 1}},
+  {6, {2, 1, 1, 4, 1, 2}},
+  {6, {2, 1, 1, 2, 1, 4}},
+  {6, {2, 1, 1, 2, 3, 2}},
+  {7, {2, 3, 3, 1, 1, 1, 2}}
+};
+uint8_t START_BASE = 38;
+uint8_t STOP = 106;
+
 /*
   @brief Initializes the EPD
   @param None
@@ -1190,6 +1307,119 @@ void SE0352NQ01::partialRefresh(
   SE0352.lut_GC();
   SE0352.refresh();
   SE0352.EPD_W21_WriteCMD(0x92); // Exit partial refresh mode
+}
+
+/*
+  @brief Detects whether we need to use Code128A, B, or C
+  @param code the text to encode
+  @return 'A' 'B' or 'C'
+*/
+char SE0352NQ01::code128Detect(char *code) {
+  uint8_t i, j = strlen(code);
+  bool allDigits = true;
+  bool allCAPS = true;
+  for (i = 0; i < j; i++) {
+    if (code[i] < '0') {
+      allDigits = false;
+      allCAPS = false;
+      break;
+    }
+    if (code[i] > '9') {
+      allDigits = false;
+    }
+    if (code[i] >= 'a' && code[i] <= 'z') {
+      allCAPS = false;
+      break;
+    }
+  }
+  if (allDigits) return 'C';
+  if (!allCAPS) return 'B';
+  return 'A';
+}
+
+/*
+  @brief Computes the proper code from ASCII + code type
+  @param charCode the character to encode
+  @param barcodeType 'A' 'B' or 'C'
+  @return the proper code (offset to Patterns[])
+*/
+uint8_t SE0352NQ01::code128FromType(uint8_t charCode, char barcodeType) {
+  if (barcodeType == 'A') {
+    if (charCode >= 0 && charCode < 32) return charCode + 64;
+    if (charCode >= 32 && charCode < 96) return charCode - 32;
+    return charCode;
+  }
+  if (barcodeType == 'B') {
+    if (charCode >= 32 && charCode < 128) return charCode - 32;
+    return charCode;
+  }
+  if (barcodeType == 'C') {
+    return charCode;
+  }
+}
+
+/*
+  @brief Draws the black modules for a code (character)
+  @param nr the character's code (offset to Patterns[])
+  @param wx module thickness in pixels
+  @param bh bar height in pixels
+  @param px horizontal start position
+  @param py vertical start position
+  @param ix index number of the character we are encoding
+  @param check running checksum
+  @return new px
+*/
+uint16_t SE0352NQ01::code128DrawBars(
+    uint8_t nr, uint8_t wx, uint8_t bh, uint16_t px, uint16_t py, uint8_t ix,
+    uint16_t *check, uint8_t rotation, uint8_t *buffer
+) {
+  struct code128Patterns ptns = Patterns[nr];
+  if (ix == 0) *check = nr;
+  else *check += ix * nr;
+  uint8_t i, icx = 0, incr;
+  uint16_t st = px;
+  for (i = 0; i < ptns.length; i++) {
+    incr = ptns.bits[i] * wx;
+    if (icx == 0) {
+      SE0352.fillRect(st, py, st + incr - 1, py + bh - 1, rotation, buffer);
+      icx = 1;
+    } else {
+      // No need to draw anything if it's a blank
+      icx = 0;
+    }
+    st += incr; // increment position
+  }
+  return st; // next px position
+}
+
+/*
+  @brief Encodes a text to Code128 and draws it
+  @param barcode source text
+  @param wx module thickness in pixels
+  @param bh bar height in pixels
+  @param px horizontal start position
+  @param py vertical start position
+  @return nothing
+*/
+void SE0352NQ01::makeCode128(char *barcode, uint8_t wx, uint8_t bh, uint16_t px, uint16_t py, uint8_t rotation, uint8_t *buffer) {
+  char barcodeType = code128Detect(barcode);
+  uint8_t i, ln = strlen(barcode);
+  uint8_t bln = (ln + 1) * 6 + 7;
+  uint16_t check = 0;
+  uint16_t st = px;
+  st = code128DrawBars((START_BASE + (uint8_t)barcodeType), wx, bh, st, py, 0, &check, rotation, buffer);
+  for (i = 0; i < ln; i++) {
+    uint8_t code;
+    if (barcodeType == 'C') {
+      // uint8_t code =  ? barcode.substr(i++, 2) : barcode.charCodeAt(i);
+    } else {
+      code = barcode[i];
+    }
+    uint8_t converted = code128FromType(code, barcodeType);
+    st = code128DrawBars(converted, wx, bh, st, py, i + 1, &check, rotation, buffer);
+  }
+  st = code128DrawBars((check % 103), wx, bh, st, py, i + 1, &check, rotation, buffer);
+  st = code128DrawBars(STOP, wx, bh, st, py, i + 1, &check, rotation, buffer);
 }
 
 SE0352NQ01 SE0352;

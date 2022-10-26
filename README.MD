@@ -63,9 +63,9 @@ Note that if the string overflows the bottom of the screen (239 or 359 depending
 uint16_t wd = SE0352.strWidth((char*)"This is a test", FreeSansBold18pt7b);
 ```
 
-This does basically the same, without drawing anything. It will be accurate too.
+This does basically the same, without drawing anything. It will be accurate too, since the function won't bail because of screen overflow.
 
-The `send` and `send_GU` commands send full-size images to the EPD.
+The `send` and `send_GU` commands send full-size images to the EPD, using either `lut_GC()` (full refresh) or `lut_DU()` (faster refresh that may leave shadows if used too often).
 
 ![Full-Size_Image](assets/Full-Size_Image.jpg)
 
@@ -102,6 +102,14 @@ I have added a few drawing primitives:
 
 `partialRefresh` is a bit finicky, but I got it to work pretty well. It too takes care of rotation.
 
+## Code128
+
+By popular demand (right...) I have added creation and display of Code128 barcodes.
+
+* `makeCode128(char *barcode, uint8_t wx, uint8_t bh, uint16_t px, uint16_t py, uint8_t rotation, uint8_t *buffer);`
+
 ## Demo
 
 ![demo](assets/demo.gif)
+
+![Code128](assets/Code128.jpg)
